@@ -1,0 +1,33 @@
+{
+    "name":"Lottery",
+    "description": "Lottery data",
+    "version": "0.1.0",
+    "private": true,
+    "author" :
+    {
+        "name" : "Hanks Ding" ,
+        "email" : "hding@muuzii.com"
+    },
+    "repository" :
+    {
+        "type" : "git" ,
+        "url" : "ssh://git@git.muuzii.com:1022/hanks/enterprise.git"
+    },
+    "dependencies": {
+        "async":"latest",
+        "ejs": "0.8.4",
+        "express": "*",
+        "mongoose": "*",
+        "node-uuid": "1.4.0",
+        "request":"*",
+        "log": "*",
+        "underscore": "*",
+        "iconv-lite":"*",
+        "body-parser":"*",
+        "express-session":"*",
+        "connect-redis":"*",
+        "morgan":"*"
+
+    }
+
+}
