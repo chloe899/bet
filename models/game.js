@@ -15,7 +15,9 @@ ModelSchema = new Schema({
     result:String,
     rate:Object,
     data:Object,
-    game_id:String
+    game_id:String,
+    end_date:Date,
+    match_date:Date
 });
 //{victory,draw，lost}
 module.exports = mongoose.model('Game', ModelSchema, "game");

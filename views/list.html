@@ -14,12 +14,33 @@
             font-family: Tahoma, Geneva, sans-serif;
         }
     </style>
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            $(".rate").on("click", function(){
+               var me = $(this);
+                var cName = "bg-primary";
+                if(me.hasClass(cName)){
+                    me.removeClass(cName);
+                }else{
+                    me.addClass(cName);
+                }
+
+
+            });
+
+
+        });
+
+    </script>
 </head>
 <body>
 <div class="container">
     <form  class="col-md-4 center-block">
        League:<input name="l" value="<%= l %>" type="text" /> <br />
         TeamName:<input name="t" value="<%= t %>" type="text" />
+        Active:<input name="a"  value="1" <%= a ? "checked" : "" %> type="checkbox" />
         <button type="submit">Query</button>
     </form>
 
@@ -27,7 +48,13 @@
 <div class="container">
     <div class="main-box">
         <div class="col-md-12">
+            <div class="container" >
+                <div class="col-md-12">
+                    <button class="btn-primary btn pull-right">OK</button>
+                </div>
 
+
+            </div>
             <table class="table">
                 <tr>
                     <th>GameName</th>
@@ -56,9 +83,9 @@
 
                             <div class="col-md-1 "><%= rate["name"]%></div>
                             <div class="col-md-8">
-                                <span class="rate"><%= rate["3"]%></span>
-                                <span class="rate"><%= rate["1"] %></span>
-                                <span class="rate"><%= rate["0"] %></span>
+                                <span data-r="3" class="rate"><%= rate["3"]%></span>
+                                <span data-r="1" class="rate"><%= rate["1"] %></span>
+                                <span data-r="0" class="rate"><%= rate["0"] %></span>
                             </div>
 
                         </div>
@@ -78,6 +105,7 @@
             </table>
 
         </div>
+
     </div>
 </div>
 </body>

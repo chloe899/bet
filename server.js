@@ -70,6 +70,11 @@ app.get("/", function(req, res, next){
     if(query.l){
         mongoQery["data.lg"] = query.l;
     }
+    if(query.a){
+      mongoQery.end_date =  {"$gt":new Date()};
+
+    }
+    log.debug(mongoQery);
     Game.find(mongoQery).sort({"data.pdate":-1}).limit(l).exec(function(err,docs){
 
         //log.debug(docs);
@@ -101,8 +106,9 @@ app.get("/", function(req, res, next){
 
         });
         var data = {list:arr};
-        data.l = query.l;
-        data.t = query.t;
+        data.l = query.l || "";
+        data.t = query.t || "";
+        data.a = query.a;
         log.debug(data);
         res.render("list.html",data);
 
