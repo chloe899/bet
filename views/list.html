@@ -16,20 +16,17 @@
     </style>
 </head>
 <body>
-<div >
-    <form >
-
-        <input name="t" type="text" />
+<div class="container">
+    <form  class="col-md-4 center-block">
+       League:<input name="l" value="<%= l %>" type="text" /> <br />
+        TeamName:<input name="t" value="<%= t %>" type="text" />
         <button type="submit">Query</button>
     </form>
 
 </div>
 <div class="container">
     <div class="main-box">
-        <div class="col-md-4">
-            <% include public/left.html %>
-        </div>
-        <div class="col-md-8">
+        <div class="col-md-12">
 
             <table class="table">
                 <tr>
@@ -51,10 +48,26 @@
                     <td><%= item.home_team && item.home_team.team_name %></td>
                     <td><%= item.visit_team && item.visit_team.team_name %></td>
                     <td><%= item.home_team && item.home_team.score || "-"%>:<%= item.visit_team && item.visit_team.score || "-" %></td>
-                    <td><span class="rate"><%= item.rate1["3"]%></span>
-                        <span class="rate"><%= item.rate1["1"] %></span>
-                        <span class="rate"><%= item.rate1["0"] %></span></td>
-                    <td><%= item.data.href %></td>
+                    <td>
+
+                        <% for(var j = 0; j < item.rates.length; j++){ var rate =  item.rates[j] %>
+
+                        <div class="row">
+
+                            <div class="col-md-1 "><%= rate["name"]%></div>
+                            <div class="col-md-8">
+                                <span class="rate"><%= rate["3"]%></span>
+                                <span class="rate"><%= rate["1"] %></span>
+                                <span class="rate"><%= rate["0"] %></span>
+                            </div>
+
+                        </div>
+                        <% } %>
+
+
+
+                      </td>
+                    <td><a href="<%= item.data.href %>" >View</a></td>
 
                 </tr>
 

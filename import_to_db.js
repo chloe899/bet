@@ -9,6 +9,7 @@ var _ = require("underscore");
 
 
 
+//var startDate = Date.parse("2015-04-13");
 var startDate = Date.parse("2011-01-01");
 startDate = new Date(startDate);
 
@@ -49,7 +50,7 @@ function parseRate(trContent){
     }
 
     rateResult  = reg.exec(trContent);
-    var key2 =key;
+    var key2 = key;
     if(rateResult){
         key2 = rateResult[1];
         key2 = formatKey(key2);
@@ -59,35 +60,46 @@ function parseRate(trContent){
 
 
 
-    var  rateReg = /<span[\s]*class="odds_item[^<]+<\/span[^>]*>/g;
+
     var valReg = /([^\s=]+)="([^"]+)"/g;
-    var rateVal = rateReg.exec(trContent);
-    var setObj;
-    if(key){
-        setObj = rate[key];
-    }
 
-    while(rateVal){
+    var rate1Reg = /<div\s*class="bet_odds">(([\s\S](?!<\/div>))*[\s\S]?)<\/div>/g;
+    var rate2Reg = /<div\s*class="bet_odds\s*bet_odds_2">(([\s\S](?!<\/div>))*[\s\S]?)<\/div>/g;
+    var regs = [[key,rate1Reg], [key2,rate2Reg]];
+    var setObj = rate[key];
+    log.debug("key1 = %s, key2 = %s",key,key2);
+    _.each(regs, function(item,i){
+        var reg = item[1];
+        var name = item[0];
+        var  rateReg = /<span[\s]*class="odds_item[^<]+<\/span[^>]*>/g;
+        setObj = rate[name];
 
-        var content = rateVal[0];
-        var subVal = valReg.exec(content);
-        var tempObj = {};
-        while(subVal){
-            var subKey = subVal[1];
-            var keyVal = subVal[2];
-            tempObj[subKey] = keyVal;
-            //log.debug("key is:%s, val is:%s", key, keyVal);
-            subVal = valReg.exec(content);
+        var rateBoxContent = reg.exec(trContent);
 
+        rateBoxContent = rateBoxContent && rateBoxContent[0];
+        //log.debug(rateBoxContent);
+        var rateVal = rateReg.exec(rateBoxContent);
+        while(rateVal){
+            var content = rateVal[0];
+            var subVal = valReg.exec(content);
+            var tempObj = {};
+            while(subVal){
+                var subKey = subVal[1];
+                var keyVal = subVal[2];
+                tempObj[subKey] = keyVal;
+                //log.debug("key is:%s, val is:%s", key, keyVal);
+                subVal = valReg.exec(content);
+
+            }
+            var rateKey = tempObj["value"];
+            setObj[rateKey] = tempObj["data-sp"];
+            rateVal = rateReg.exec(rateBoxContent);
         }
-        var rateKey = tempObj["value"];
-        setObj[rateKey] = tempObj["data-sp"];
-        //log.debug(setObj);
-        if(rateKey == "0"){
-            setObj = rate[key2];
-        }
-        rateVal = rateReg.exec(trContent);
-    }
+
+    });
+    //log.debug(rate);
+
+
     //log.debug(rate);
     return rate;
 
@@ -306,6 +318,7 @@ async.waterfall([function(cb){
 
 
     start(startDate);
+   /* startOne();
     startOne();
     startOne();
     startOne();
@@ -316,8 +329,7 @@ async.waterfall([function(cb){
     startOne();
     startOne();
     startOne();
-    startOne();
-    startOne();
+    startOne();*/
 });
 
 

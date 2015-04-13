@@ -53,6 +53,7 @@ app.engine('html', require('ejs').renderFile);
 
 
 
+
 var port = siteConfig.port;
 app.get("/", function(req, res, next){
     var Game = require("./models/game");
@@ -66,27 +67,42 @@ app.get("/", function(req, res, next){
             {"data.team_info.visit_team.team_name":name},
             ];
     }
+    if(query.l){
+        mongoQery["data.lg"] = query.l;
+    }
     Game.find(mongoQery).sort({"data.pdate":-1}).limit(l).exec(function(err,docs){
 
         //log.debug(docs);
         var arr = _.map(docs, function(doc){
             doc = doc.toJSON();
-            var data = doc.data
+            var data = doc.data;
 
             if(data.team_info){
 
                 doc.home_team = data.team_info.home_team;
                 doc.visit_team = data.team_info.visit_team;
-                doc.rate1 = data.team_info.rate["0"];
+                var rates = [];
+                _.each(data.team_info.rate, function(v,k){
+                    v.name = k;
+                    rates.push(v);
+
+
+
+                });
+                doc.rates = rates;
+
 
             }else{
                 doc.home_team = {};
                 doc.visit_team = {};
             }
+            doc.rates = doc.rates || [];
             return doc;
 
         });
-        var data = {list:arr}
+        var data = {list:arr};
+        data.l = query.l;
+        data.t = query.t;
         log.debug(data);
         res.render("list.html",data);
 
@@ -97,6 +113,8 @@ app.get("/", function(req, res, next){
 
 
 });
+
+app.use(express.static(path.join(__dirname, 'static')));
 
 
 that.start = function(options, callback){
