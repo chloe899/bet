@@ -10,7 +10,7 @@ var _ = require("underscore");
 
 
 //var startDate = Date.parse("2015-04-13");
-var startDate = Date.parse("2011-01-01");
+var startDate = Date.parse("2015-01-01");
 startDate = new Date(startDate);
 
 
@@ -278,9 +278,10 @@ function doParse(filePath, callback){
                         //cb();
                     }else{
                         log.debug("create new");
+                        doc = {game_id:result.zid,data:result};
                         doc.end_date = new Date(Date.parse(result.pendtime));
                         doc.match_date = result.match_date;
-                        Game.create({game_id:result.zid,data:result}, function(err,doc){
+                        Game.create(doc, function(err,doc){
                             cb();
                         });
                     }
