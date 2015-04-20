@@ -1,0 +1,41 @@
+li {
+    list-style: none;
+}
+
+.rate{
+
+    cursor: pointer;
+    background: url(http://img02.taobaocdn.com/tps/i2/T1_ic.Xb0hXXa2CLfX-2-469.png) repeat-x 0 -240px;
+
+}
+
+.rate.active{
+
+    background: url(http://img02.taobaocdn.com/tps/i2/T1_ic.Xb0hXXa2CLfX-2-469.png) repeat-x 0 -280px;
+    color: #fff;
+
+}
+
+.race-basket .multiple-info input {
+    width: 40px;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: top;
+    border: 1px solid #CCC;
+    background: url(http://img03.taobaocdn.com/tps/i3/T1PolrXt0cXXXLX9cK-195-320.gif) no-repeat -54px -1px;
+    padding: 0 5px;
+    _margin-right: 4px;
+}
+
+.race-basket {
+    background-color: #fef7cf;
+    border: 1px solid;
+    border-color: #dcc186 #dbd29d;
+}
+
+.race-basket .bet-type li {
+    float: left;
+    padding: 0 6px;
+    cursor: pointer;
+    letter-spacing: 0;
+}

@@ -23,17 +23,6 @@
 
         $(document).ready(function(){
 
-            $(".rate").on("click", function(){
-               var me = $(this);
-                var cName = "bg-primary";
-                if(me.hasClass(cName)){
-                    me.removeClass(cName);
-                }else{
-                    me.addClass(cName);
-                }
-
-
-            });
 
 
         });
@@ -43,7 +32,7 @@
 <body>
 <div class="container">
     <form  class="col-md-4 center-block">
-       League:<input name="l" value="<%= l %>" type="text" /> <br />
+        League:<input name="l" value="<%= l %>" type="text" /> <br />
         TeamName:<input name="t" value="<%= t %>" type="text" />
         Active:<input name="a"  value="1" <%= a ? "checked" : "" %> type="checkbox" />
         <button type="submit">Query</button>
@@ -74,7 +63,7 @@
                 <% for(var i = 0; i < list.length; i++){ var item = list[i] %>
 
 
-                <tr>
+                <tr data-match-id="<%= item.game_id %>">
                     <td><%= item.data.lg %></td>
                     <td><%= item.data.pdate %></td>
                     <td><%= item.home_team && item.home_team.team_name %></td>
@@ -98,7 +87,7 @@
 
 
 
-                      </td>
+                    </td>
                     <td><a href="<%= item.data.href %>" >View</a></td>
 
                 </tr>
@@ -112,7 +101,90 @@
         </div>
     </div>
     <div class="detail container">
-             sdfsafdsdfas
+        <div id="BetBasket" class="race-basket clearfix race-basket-fixed row" data-spm="a313c">
+            <div id="BetView" class="bet-view col-md-2">
+                <span>已选 <em id="SelMatchCount">4</em> 场</span><br>
+                <input type="checkbox" id="ViewSelMatch"><label>查看已选</label>
+            </div>
+            <div class="col-md-8">
+                <div id="BetOption" class="bet-option">
+                    <!--
+                    <div class="bet-tip">
+                        <span class="option-name">重要提醒：</span>
+                        <span>不包含单一玩法串</span>
+                        <span class="float-tip" rel="即不包含混串过关中单个玩法的串关注数，任意串最少为篮彩的两个玩法或更多，任意串为单个玩法均不支持。"></span>
+                    </div>
+                    -->
+                    <div id="BetHint" class="bet-hint ">请至少选择<em>2</em>场比赛进行投注</div>
+                    <div id="PassType" class="bet-type row hidden">
+                        <span class="option-name col-md-2">自由过关：</span>
+                        <ul  >
+                            <li class="">
+                                <input data-type="2" id="PassType2x1" type="checkbox" value="2串1"> 2串1
+                            </li>
+                            <li class="">
+                                <input  data-type="3" id="PassType3x1" type="checkbox" value="3串1"> 3串1
+                            </li>
+                            <li class="">
+                                <input  data-type="4"  id="PassType4x1" type="checkbox" value="4串1"> 4串1
+                            </li>
+                            <li class="hidden">
+                                <input   data-type="5" id="PassType5x1" type="checkbox" value="5串1"> 5串1
+                            </li>
+                            <li class="hidden">
+                                <input   data-type="6" id="PassType6x1" type="checkbox" value="6串1"> 6串1
+                            </li>
+                            <li class="hidden">
+                                <input   data-type="7" id="PassType7x1" type="checkbox" value="7串1"> 7串1
+                            </li>
+                            <li class="hidden">
+                                <input  data-type="8"  id="PassType8x1" type="checkbox" value="8串1"> 8串1
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bet-mul">
+                	<span class="bet-multiple">
+	                    <span class="option-name">方案倍数：</span>
+	                    <span class="multiple-info">
+	                        <button id="BetMultipleSub" class="sub hidden"></button>
+	                        <input id="BetMultipleCount" type="text" value="1">
+	                        <button id="BetMultipleAdd" class="add hidden"></button>
+	                    </span>
+	                    <span class="basket-tip">(最大<em id="BetMultipleTip">99999</em>倍)</span>
+                    </span>
+
+                    <span class="bet-award">
+	                    <span class="option-name">奖金预测：</span>
+	                    <span class="award-num">
+	                        <em id="BetAward">15.71 ~ 2554.34</em> 元
+	                    </span>
+						<span id="yc-optimize">
+							奖金优化<img style="position:absolute;margin:-3px 0 0 1px;*margin:-5px 0 0 1px" src="http://img04.taobaocdn.com/tps/i4/T12KCKXbRxXXXXXXXX-21-11.gif">
+						</span>
+                    </span>
+                    </div>
+                </div>
+                <div id="BetStatus" class="bet-status">
+                    <div class="bet-count">
+                        <span class="option-name">所选注数：</span>
+                    <span class="count-num">
+                        <em id="BetCount">96</em> 注
+                    </span>
+                    </div>
+                    <div class="bet-money">
+                        <span class="option-name">方案金额：</span>
+                    <span class="money-num">
+                        <em id="BetMoney">192</em> 元
+                    </span>
+                    </div>
+                </div>
+                <div id="BetAct" class="bet-act">
+                    <a id="BtnPay" class="btn-pay disabled" href="#"></a>
+                    <a id="BtnGroupPay" class="btn-group-pay disabled" href="#"></a>
+                    <div class="stop-sale hidden">截止投注时间：<em id="StopSaleTime">2015-04-20 23:55</em></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>
