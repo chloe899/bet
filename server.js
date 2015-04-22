@@ -120,6 +120,14 @@ app.get("/", function(req, res, next){
 
 });
 
+app.post("/bet",function(req, res,next){
+   var details  = req.body;
+
+
+
+
+});
+
 app.use(express.static(path.join(__dirname, 'static')));
 
 
