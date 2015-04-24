@@ -60,6 +60,8 @@ app.get("/", function(req, res, next){
     var query = req.query;
     var mongoQery = {};
     var l = 100;
+    var start = query.s;
+    var endDate = query.e;
     if(query.t){
         l = 1000;
         var name = query.t;
@@ -68,11 +70,22 @@ app.get("/", function(req, res, next){
             ];
     }
     if(query.l){
+        l = 1000;
         mongoQery["data.lg"] = query.l;
     }
     if(query.a){
       mongoQery.end_date =  {"$gt":new Date()};
 
+    }
+    if(start){
+        l = 1000;
+        start = new Date(Date.parse(start));
+        mongoQery["data.team_info.match_date"] = {"$gt":start};
+    }
+    if(endDate){
+        l = 1000;
+        endDate = new Date(Date.parse(endDate));
+        mongoQery["data.team_info.match_date"] = {"$lt":endDate};
     }
     log.debug(mongoQery);
     Game.find(mongoQery).sort({"data.pdate":-1}).limit(l).exec(function(err,docs){
@@ -109,6 +122,8 @@ app.get("/", function(req, res, next){
         data.l = query.l || "";
         data.t = query.t || "";
         data.a = query.a;
+        data.s = start || "";
+        data.e = endDate || "";
         log.debug(data);
         res.render("list.html",data);
 

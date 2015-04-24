@@ -32,6 +32,8 @@
 <body>
 <div class="container">
     <form  class="col-md-4 center-block">
+        StartDate:<input name="s" value="<%= s %>" type="text" /> <br />
+        EndDate:<input name="e" value="<%= e %>" type="text" /> <br />
         League:<input name="l" value="<%= l %>" type="text" /> <br />
         TeamName:<input name="t" value="<%= t %>" type="text" />
         Active:<input name="a"  value="1" <%= a ? "checked" : "" %> type="checkbox" />
@@ -51,7 +53,7 @@
             </div>
             <table class="table">
                 <tr>
-                    <th>GameName</th>
+                    <th>GameName<span class="caret"></span></th>
                     <th>Date</th>
                     <th>HomeTeam</th>
                     <th>VisitTeam</th>
