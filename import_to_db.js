@@ -155,17 +155,22 @@ function parseGameInfo(trContent){
     }
     var homeTeam = dataArr[0];
     var visitTeam = dataArr[1];
+    var rate = parseRate(trContent);
+    var result = {home_team:dataArr[0],visit_team:dataArr[1]};
+    result.rate = rate;
+    result.complete = false;
+    var match_date = end_timeReg.exec(trContent);
     if(score){
         var homeScore = score[1];
         var visitScore = score[2];
         homeTeam.score = homeScore;
         visitTeam.score = visitScore;
+        result.complete = true;
     }
 
-    var rate = parseRate(trContent);
-    var result = {home_team:dataArr[0],visit_team:dataArr[1]};
-    result.rate = rate;
-    var match_date = end_timeReg.exec(trContent);
+
+
+
     //log.debug(amt)
     if(match_date){
         match_date = match_date[1];
@@ -182,7 +187,24 @@ function parseGameInfo(trContent){
 
 function doParse(filePath, callback){
 
-    async.waterfall([function(cb){
+    async.waterfall([
+
+        function(cb){
+
+            var ParseRecord = require("./models/parse_record");
+            var q = {name:filePath};
+            ParseRecord.findOne(q, function(err, d){
+               if(d){
+                   cb("parse complete");
+               }
+                else{
+                   cb();
+               }
+
+            });
+
+        },
+        function(cb){
 
         fs.readFile(filePath, function(err, buffer){
 
@@ -250,16 +272,18 @@ function doParse(filePath, callback){
         //log.debug(resultArr);
         if(resultArr){
             //callback(null, resultArr);
+            var hasUnComplete = _.find(resultArr, function(item){
+                return !item.team_info.complete;
+
+            });
+
             async.each(resultArr, function(result, cb){
                 var gameId = result.zid;
                 var query =  {game_id:result.zid};
                 if(result.lg){
                     result.lg = result.lg.replace(/\s/g,"");
                 }
-                //log.debug(result);
-                // cb();
-                //return;
-                //log.debug(query);
+
                 var queryStart = Date.now();
                 Game.findOne(query,function(err,doc){
                     log.debug(query);
@@ -289,13 +313,31 @@ function doParse(filePath, callback){
                 });
             }, function(err, result){
                 log.debug("save to db complete");
-                callback(err, result);
+                if(!hasUnComplete){
+                    var ParseRecord = require("./models/parse_record");
+                    var data = {name:filePath};
+                    data.complete = true;
+                    data.created_at = new Date();
+                    ParseRecord.create(data, function(err, result){
+
+                        callback(err, result);
+                    });
+
+                }else{
+                    if(err){
+                        log.error(err);
+                    }
+                    callback(null, result);
+
+                }
+
 
 
             });
 
 
         }else{
+            log.debug(arguments);
             callback();
         }
 

@@ -9,9 +9,9 @@ var mongoose = require('mongoose'),
 
 ModelSchema = new Schema({
     name:String,
-    amount:Date,
+    complete:Boolean,
     created_at:Date,
-    last_login:Date
+    complete_date:Date
 });
 //{victory,draw，lost}
-module.exports = mongoose.model('User', ModelSchema, "users");
+module.exports = mongoose.model('ParseRecord', ModelSchema, "parse_record");

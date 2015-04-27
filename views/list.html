@@ -21,6 +21,47 @@
     <script type="text/javascript">
         $(document).ready(function(){
 
+            var lgArr = {}
+            $("[data-e='lg']").each(function(i){
+
+                var item = $(this);
+                var name = item.html();
+                lgArr[name] = lgArr[name] || 0;
+                lgArr[name]++;
+            });
+
+
+            var t = '<label for="lg{{number}}"><input id="lg{{number}}" m="{{name}}" type="checkbox" checked="checked" class="lg_ck">{{name}}<span class="gray">({{count}}场)</span></label>'
+
+            var html = '<a href="javascript: void(0)" id="link161">全清</a>';
+            var i = 0;
+            _.each(lgArr, function(val, key){
+                i++;
+                var o = {name:key, count:val,number:i}
+                html += Mustache.render(t, o);
+
+            });
+
+           $("#match_s").html(html);
+
+            $(".lg_ck").on('click', function(){
+
+               var name = $(this).attr("m");
+                console.log("[data-lg='" + name +"']");
+                if($(this).prop("checked")){
+                    $("[data-lg='" + name +"']").show();
+                }else{
+                    $("[data-lg='" + name +"']").hide();
+                }
+
+
+            });
+
+            $("#link161").on("click", function(){
+                $("[data-e='match']").hide();
+                $(".lg_ck").prop("checked", false);
+
+            });
 
 
         });
@@ -59,12 +100,18 @@
                     <th>Rate</th>
                     <th>Link</th>
                 </tr>
+                <tr>
+                    <td id="match_s" colspan="7">
+
+
+                    </td>
+                </tr>
 
                 <% for(var i = 0; i < list.length; i++){ var item = list[i] %>
 
 
-                <tr data-match-id="<%= item.game_id %>">
-                    <td><%= item.data.lg %></td>
+                <tr data-e="match" data-lg="<%= item.data.lg %>" data-match-id="<%= item.game_id %>">
+                    <td data-e="lg"><%= item.data.lg %></td>
                     <td><%= item.data.pdate %></td>
                     <td><%= item.home_team && item.home_team.team_name %></td>
                     <td><%= item.visit_team && item.visit_team.team_name %></td>
@@ -182,6 +229,9 @@
                     <a id="BtnPay" class="btn-pay disabled" href="#"></a>
                     <a id="BtnGroupPay" class="btn-group-pay disabled" href="#"></a>
                     <div class="stop-sale hidden">截止投注时间：<em id="StopSaleTime">2015-04-20 23:55</em></div>
+                </div>
+                <div class="col-md-2 pull-right">
+                    <button class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
