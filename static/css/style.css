@@ -39,3 +39,38 @@ li {
     cursor: pointer;
     letter-spacing: 0;
 }
+
+.login{
+
+
+}
+
+
+.site-nav {
+    z-index: 10000;
+    width: 100%;
+    background: #F5F5F5;
+    border-bottom: 1px solid #EEE;
+}
+
+.site-nav-bd{
+
+    margin: 0 auto;
+    width: 990px;
+    height: 35px;
+    background: #F5F5F5;
+    -webkit-backface-visibility: hidden;
+}
+
+
+.border-box{
+
+    margin-right: 0;
+    margin-left: 0;
+    background-color: #fff;
+    border-color: #ddd;
+    border-width: 1px;
+    border-radius: 4px 4px 0 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}

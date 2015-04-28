@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
+    <title>Muuzii Platform Manage</title>
+    <% include ../public/common.html %>
+    <style type="text/css">
+        .rate{
+
+            display: inline-block;
+            width: 35px;
+            font-family: Tahoma, Geneva, sans-serif;
+        }
+        .detail{
+            position: fixed;
+            bottom:0;
+
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            var lgArr = {}
+            $("[data-e='lg']").each(function(i){
+
+                var item = $(this);
+                var name = item.html();
+                lgArr[name] = lgArr[name] || 0;
+                lgArr[name]++;
+            });
+
+
+            var t = '<label for="lg{{number}}"><input id="lg{{number}}" m="{{name}}" type="checkbox" checked="checked" class="lg_ck">{{name}}<span class="gray">({{count}}场)</span></label>'
+
+            var html = '<a href="javascript: void(0)" id="link161">全清</a>';
+            var i = 0;
+            _.each(lgArr, function(val, key){
+                i++;
+                var o = {name:key, count:val,number:i}
+                html += Mustache.render(t, o);
+
+            });
+
+            $("#match_s").html(html);
+
+            $(".lg_ck").on('click', function(){
+
+                var name = $(this).attr("m");
+                console.log("[data-lg='" + name +"']");
+                if($(this).prop("checked")){
+                    $("[data-lg='" + name +"']").show();
+                }else{
+                    $("[data-lg='" + name +"']").hide();
+                }
+
+
+            });
+
+            $("#link161").on("click", function(){
+                $("[data-e='match']").hide();
+                $(".lg_ck").prop("checked", false);
+
+            });
+
+
+        });
+
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="login-div reg-form">
+        <h4>注册</h4>
+        <form role="form" method="post">
+        <div class="form-group">
+            <label  for="inputEmail3" class="control-label"> <i class="icon icon-mail"></i><span>输入邮件地址</span>
+            </label>
+            <input type="email" name="email" class="form-control" id="inputEmail3" placeholder="输入邮件地址">
+        </div>
+        <div class="form-group">
+            <label  for="inputPassword3" class="control-label"> <i class="icon icon-key-1"></i><span>输入密码</span>
+            </label>
+            <input type="password" name="password" class="form-control" id="inputPassword3" placeholder="输入密码">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-default">注册</button>
+
+        </div>
+        <% if(err_msg){ %>
+        <p class="errormsg" style="display:none">
+            <i class="icon icon-exclamation"></i>
+            <span>请填写正确的邮件地址</span>
+        </p>
+         <% } %>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+
+

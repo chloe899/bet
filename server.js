@@ -14,6 +14,7 @@ var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var morgan  = require('morgan');
 var _ = require("underscore");
+var routes = require("./routes");
 
 var workEnv = process.env.NODE_ENV || "development";
 
@@ -135,13 +136,10 @@ app.get("/", function(req, res, next){
 
 });
 
-app.post("/bet",function(req, res,next){
-   var details  = req.body;
 
 
+routes.init(app);
 
-
-});
 
 app.use(express.static(path.join(__dirname, 'static')));
 
