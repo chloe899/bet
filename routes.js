@@ -1,4 +1,5 @@
 var userCtrl = require("./controllers/user");
+var betCtrl = require("./controllers/bet");
 
 
 
@@ -11,6 +12,8 @@ that.init = function(app){
     app.post("/user/login", userCtrl.login);
     app.get("/user/signup.html",userCtrl.showSignup);
     app.post("/user/signup.html",userCtrl.signup);
+    app.post("/bet/add",betCtrl.addBet);
+    app.get("/bet/list.html",betCtrl.showBetList);
 
 };
 

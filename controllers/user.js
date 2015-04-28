@@ -53,6 +53,7 @@ that.login  = function(req, res, next){
         if(err){
             res.send({error:true, reason:err});
         }else{
+            req.session.user= user;
             res.send(user);
         }
 

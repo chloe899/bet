@@ -11,6 +11,8 @@
             var data = getData();
             var matchCount = data.matchCount;
             $("#SelMatchCount").html(matchCount);
+            var multi = $("#BetMultipleCount").val();
+            multi = parseInt(multi) || 1;
             if(matchCount < 2){
                 $("#BetHint").removeClass("hidden");
                 $("#PassType").addClass("hidden");
@@ -34,10 +36,13 @@
                 });
                 console.log()
                 $("#BetCount").html(resultArr.length);
+
                 var min = 0;
                 var max = 0;
+                var totalBet = 0;
                 _.each(resultArr, function(item){
                     var r = 1;
+                    totalBet++;
                     _.each(item, function(subItem){
 
                         r  = r * subItem.rate;
@@ -54,6 +59,9 @@
                     }
 
                 });
+                min = min.toFixed(2);
+                max = max.toFixed(2);
+                $("#BetMoney").html("" + totalBet * 2 * multi);
                 $("#BetAward").html(min + "-----" + max);
 
             }
@@ -280,6 +288,37 @@
             }
 
             render();
+
+        });
+
+        $("#BetMultipleCount").on("input", function(){
+
+            render();
+
+
+        });
+
+        $("[data-a='save']").on("click", function(){
+
+            var resultArr = [];
+            $("#PassType input:checked").each(function(){
+                var type = $(this).data("type");
+                resultArr =  resultArr.concat(genDetail(type));
+
+            });
+
+           var multi =  +$("#BetMultipleCount").val() || 1;
+            var data = {matches:resultArr,multi:multi};
+
+
+            spectoAjax({data:data,url:"/bet/add",success:function(){
+
+                //location.href = "/bet/list.html";
+
+
+            }}, true);
+
+
 
         });
 

@@ -1,6 +1,10 @@
 <div class="container site-nav">
    <div class="site-nav-bd">
+    <% if(!locals.user) { %>
+       <a href="/user/login.html">Login</a>
 
-       <a href="login.html">Login</a>
+       <% } else {%>
+         <%= user.email %>
+       <% } %>
    </div>
 </div>

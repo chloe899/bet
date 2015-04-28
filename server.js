@@ -53,7 +53,15 @@ app.engine('html', require('ejs').renderFile);
 
 
 
+app.use(function(req, res, next){
+    if(req.session.user){
+        res.locals = res.locals || {};
+        res.locals.user = req.session.user;
+    }
+    next();
 
+
+});
 
 var port = siteConfig.port;
 app.get("/", function(req, res, next){
@@ -126,6 +134,7 @@ app.get("/", function(req, res, next){
         data.s = start || "";
         data.e = endDate || "";
         log.debug(data);
+        data.user = req.session.user;
         res.render("list.html",data);
 
     });

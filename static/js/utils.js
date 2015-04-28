@@ -12,3 +12,23 @@ function formatDate(){
 
     });
 }
+
+
+function spectoAjax(options, isjsonpost) {
+    var newOptions = $.extend({
+        processData: false
+    }, options);
+
+    if (isjsonpost) {
+        newOptions.contentType = "application/json";
+        newOptions.dataType = "json";
+        newOptions.processData = false;
+        newOptions.type = "post";
+        if (typeof(newOptions.data) == "object") {
+            newOptions.data = JSON.stringify(options.data);
+        }
+
+    }
+    $.ajax(newOptions);
+
+}

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
+    <title>Muuzii Platform Manage</title>
+    <% include ../public/common.html %>
+    <style type="text/css">
+        .rate{
+
+            display: inline-block;
+            width: 35px;
+            font-family: Tahoma, Geneva, sans-serif;
+        }
+        .detail{
+
+            bottom:0;
+
+        }
+    </style>
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            $("[data-e='result']").each(function(){
+
+                var result = $(this).data("result");
+                var rate = $(this).data("rate");
+                //胜平负
+                var descObj = {
+                    "0":"负",
+                    "1":"平",
+                    "3":"胜"
+
+                }
+                var txt = descObj[result];
+                txt += "(" + rate + ")";
+                $(this).html(txt);
+
+
+            });
+            formatDate();
+        });
+
+
+
+    </script>
+
+</head>
+<body>
+<% include ../public/header.html %>
+<div class="container">
+
+
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="container" >
+                <div class="col-md-12">
+                    <button class="btn-primary btn pull-right">OK</button>
+                </div>
+
+
+            </div>
+            <table class="table">
+                <tr>
+                    <th>GameName<span class="caret"></span></th>
+                    <th>Info</th>
+                    <th>Total</th>
+
+                </tr>
+                <tr>
+                    <td id="match_s" colspan="7">
+
+
+                    </td>
+                </tr>
+
+                <% for(var i = 0; i < list.length; i++){ var item = list[i] %>
+
+
+                <tr data-e="bet">
+
+                    <td data-p="date"><%= item.created_at %></td>
+
+                    <td>
+
+                        <% for(var j = 0; j < item.matches.length; j++){ var match =  item.matches[j] %>
+
+                        <div class="row">
+
+                            <div class="col-md-2 "><%= match.matchId %></div>
+                            <div class="col-md-4"><%= match.home_team.team_name%> VS <%= match.visit_team.team_name %></div>
+                            <div class="col-md-2" data-rate="<%= match.rate %>" data-e="result" data-result="<%= match.result %>"></div>
+
+                        </div>
+                        <% } %>
+
+                    </td>
+                    <td><%= item.multi * 2 %></td>
+                </tr>
+
+                <% } %>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
