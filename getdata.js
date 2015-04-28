@@ -1,6 +1,7 @@
 var request = require("request");
 var fs = require("fs");
 var async = require("async");
+var Models = require("../models");
 
 
 
@@ -85,16 +86,25 @@ function start(date){
 
 
 }
-start(startDate);
-startOne();
-startOne();
-startOne();
-startOne();
-startOne();
-startOne();
-startOne();
-startOne();
-startOne();
-startOne();
-startOne();
-startOne();
+
+async.waterfall([function(cb){
+
+
+    var db = mongoose.connection;
+    db.on("error",function(err){
+        log.error(err.stack || err);
+    });
+    mongoose.connect("mongodb://localhost/lottery", function(err, db){
+        cb(err, db);
+    });
+
+
+
+}], function(err, result){
+
+
+    start(startDate);
+
+});
+
+
