@@ -13,7 +13,7 @@
             font-family: Tahoma, Geneva, sans-serif;
         }
         .detail{
-            position: fixed;
+
             bottom:0;
 
         }
@@ -42,11 +42,11 @@
 
             });
 
-           $("#match_s").html(html);
+            $("#match_s").html(html);
 
             $(".lg_ck").on('click', function(){
 
-               var name = $(this).attr("m");
+                var name = $(this).attr("m");
                 console.log("[data-lg='" + name +"']");
                 if($(this).prop("checked")){
                     $("[data-lg='" + name +"']").show();
@@ -60,6 +60,19 @@
             $("#link161").on("click", function(){
                 $("[data-e='match']").hide();
                 $(".lg_ck").prop("checked", false);
+
+            });
+
+            $(window).on("scroll", function(){
+
+                var top =   $(window).scrollTop();
+                var height = $(window).height();
+                var dheight = $(document).height();
+                 if((top + height) + 100 > dheight){
+                     $(".detail").removeClass("fixed");
+                 }else{
+                     $(".detail").removeClass("fixed").addClass("fixed");
+                 }
 
             });
 
@@ -82,7 +95,7 @@
 
 </div>
 <div class="container">
-    <div class="main-box">
+    <div class="row">
         <div class="col-md-12">
             <div class="container" >
                 <div class="col-md-12">
@@ -148,7 +161,7 @@
 
         </div>
     </div>
-    <div class="detail container">
+    <div class="detail container fixed">
         <div id="BetBasket" class="race-basket clearfix race-basket-fixed row" data-spm="a313c">
             <div id="BetView" class="bet-view col-md-2">
                 <span>已选 <em id="SelMatchCount">4</em> 场</span><br>

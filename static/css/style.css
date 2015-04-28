@@ -45,6 +45,10 @@ li {
 
 }
 
+.fixed{
+    position: fixed;
+}
+
 
 .site-nav {
     z-index: 10000;
