@@ -128,7 +128,7 @@
 
                 <tr data-e="match" data-lg="<%= item.data.lg %>" data-match-id="<%= item.game_id %>">
                     <td data-e="lg"><%= item.data.lg %></td>
-                    <td data-p="date"><%= item.data.team_info.team_info %></td>
+                    <td data-p="date"><%= item.data.team_info.match_date %></td>
                     <td><%= item.home_team && item.home_team.team_name %></td>
                     <td><%= item.visit_team && item.visit_team.team_name %></td>
                     <td><%= item.home_team && item.home_team.score || "-"%>:<%= item.visit_team && item.visit_team.score || "-" %></td>
