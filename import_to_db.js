@@ -10,7 +10,7 @@ var _ = require("underscore");
 
 
 //var startDate = Date.parse("2015-04-13");
-var startDate = Date.parse("2015-01-01");
+var startDate = Date.parse("2011-01-01");
 startDate = new Date(startDate);
 
 
@@ -192,7 +192,7 @@ function doParse(filePath, callback){
         function(cb){
 
             var ParseRecord = require("./models/parse_record");
-            var q = {name:filePath};
+            var q = {name:filePath,complete:true};
             ParseRecord.findOne(q, function(err, d){
                if(d){
                    cb("parse complete");
@@ -270,6 +270,7 @@ function doParse(filePath, callback){
     }], function(err, resultArr){
 
         //log.debug(resultArr);
+        var ParseRecord = require("./models/parse_record");
         if(resultArr){
             //callback(null, resultArr);
             var hasUnComplete = _.find(resultArr, function(item){
@@ -290,6 +291,10 @@ function doParse(filePath, callback){
                     var timeUse = Date.now() - queryStart;
                     log.debug("query time use: %s ms", timeUse);
                     if(doc){
+                        if(doc.data.team_info.complete){
+                            cb();
+                            return;
+                        }
                         doc.data = result;
                         doc.end_date = new Date(Date.parse(result.pendtime));
                         doc.match_date = result.match_date;
@@ -313,23 +318,33 @@ function doParse(filePath, callback){
                 });
             }, function(err, result){
                 log.debug("save to db complete");
-                if(!hasUnComplete){
-                    var ParseRecord = require("./models/parse_record");
-                    var data = {name:filePath};
+                ParseRecord.findOne({name:filePath}, function(err, doc){
+                    var data = doc || {name:filePath};
                     data.complete = true;
                     data.created_at = new Date();
-                    ParseRecord.create(data, function(err, result){
+                    data.match_count = resultArr.length;
+                    if(hasUnComplete){
+                       data.complete = false;
+                       var arr =  _.select(resultArr, function(item){
+                            return !item.team_info.complete;
 
-                        callback(err, result);
-                    });
-
-                }else{
-                    if(err){
-                        log.error(err);
+                        });
+                        log.debug(arr);
                     }
-                    callback(null, result);
+                    if(doc){
+                        doc.save(function(err, result){
+                            callback(err, result);
+                        })
+                    }else{
 
-                }
+                        ParseRecord.create(data, function(err, result){
+                            callback(err, result);
+                        });
+                    }
+
+
+                });
+
 
 
 
@@ -338,7 +353,15 @@ function doParse(filePath, callback){
 
         }else{
             log.debug(arguments);
-            callback();
+            var data = {name:filePath};
+            data.complete = true;
+            data.created_at = new Date();
+            data.match_count = 0;
+            ParseRecord.create(data, function(err, result){
+
+                callback(err, result);
+            });
+
         }
 
     });

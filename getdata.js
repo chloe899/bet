@@ -3,16 +3,17 @@ var fs = require("fs");
 var async = require("async");
 var Models = require("./models");
 var mongoose = require("mongoose");
+var log = require("./lib/logger").getLogger();
 
 
 
 
 
-
+var ParseRecord = Models.ParseRecord;
 
 var now = Date.now();
 
-var startDate = Date.parse("2011-01-01");
+var startDate = Date.parse("2015-01-01");
 startDate = new Date(startDate);
 
 
@@ -39,9 +40,11 @@ function start(date){
         var filePath = "data/" + fileName;
         async.waterfall([function(cb){
 
-            fs.exists(filePath, function(exists) {
-              cb(null, exists)
-            })
+            var query = {name:filePath,complete:true};
+            ParseRecord.findOne(query, function(err, doc){
+
+                cb(null, doc)
+            });
         }, function(exists, cb){
             if(exists){
                 cb(null);
@@ -80,7 +83,7 @@ function start(date){
     }
     else{
          console.log("complete date is %s", date);
-        process.exit(0);
+        //process.exit(0);
 
         return
 
@@ -105,7 +108,10 @@ async.waterfall([function(cb){
 }], function(err, result){
 
 
-    start(startDate);
+    startOne();
+    startOne();
+    startOne();
+    startOne();
 
 });
 

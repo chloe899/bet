@@ -11,6 +11,7 @@ ModelSchema = new Schema({
     name:String,
     complete:Boolean,
     created_at:Date,
+    match_count:Number,
     complete_date:Date
 });
 //{victory,draw，lost}

@@ -12,7 +12,7 @@ ModelSchema = new Schema({
     email:String,
     password:String,
     last_login:Date,
-    amount:Date,
+    amount:Number,
     created_at:Date,
     salt:String
 });

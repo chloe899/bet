@@ -4,7 +4,9 @@
        <a href="/user/login.html">Login</a>
 
        <% } else {%>
-         <%= user.email %>
+         <%= user.email %> Amount:<%= user.amount %>
+        <a href="/bet/list.html" >BetList</a>
+        <a href="/" >Bet</a>
        <% } %>
    </div>
 </div>

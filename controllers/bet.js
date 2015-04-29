@@ -33,12 +33,15 @@ that.addBet = function(req, res, next){
 
     }, function(err,result){
 
-        Models.User.update({_id:user._id},{amount:{"$inc":reduce * -1}}, function(err, user){
+        Models.User.findOneAndUpdate({_id:user._id},{"$inc":{"amount":reduce * -1}}, function(err, user){
            log.debug("update complete");
+           req.session.user = user;
+           res.send({ok:true});
 
         });
 
-        res.send({ok:true});
+
+
 
     });
 
