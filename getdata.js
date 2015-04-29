@@ -1,7 +1,8 @@
 var request = require("request");
 var fs = require("fs");
 var async = require("async");
-var Models = require("../models");
+var Models = require("./models");
+var mongoose = require("mongoose");
 
 
 
@@ -79,6 +80,7 @@ function start(date){
     }
     else{
          console.log("complete date is %s", date);
+        process.exit(0);
 
         return
 
