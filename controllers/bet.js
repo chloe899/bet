@@ -107,6 +107,16 @@ that.showBetList = function(req, res, next){
     }], function(err, docs){
 
         log.debug(docs);
+        _.each(docs, function(item){
+
+            _.each(item.matches, function(m){
+               item.winnings = item.winnings || 1;
+               item.winnings *= m.rate;
+
+            });
+            item.winnings = +item.winnings.toFixed(2);
+
+        });
         var data = {list:docs};
         var viewPath = "bet/list.html";
         res.render(viewPath, data);

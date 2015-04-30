@@ -27,6 +27,7 @@
 
                 var result = $(this).data("result");
                 var rate = $(this).data("rate");
+                var ball = $(this).data("ball");
                 //胜平负
                 var descObj = {
                     "0":"负",
@@ -34,8 +35,10 @@
                     "3":"胜"
 
                 }
+
                 var txt = descObj[result];
                 txt += "(" + rate + ")";
+
                 $(this).html(txt);
 
 
@@ -68,8 +71,8 @@
                 <tr>
                     <th>GameName<span class="caret"></span></th>
                     <th>Info</th>
+                    <th>Winnings</th>
                     <th>Total</th>
-
                 </tr>
                 <tr>
                     <td id="match_s" colspan="7">
@@ -92,13 +95,18 @@
                         <div class="row">
 
                             <div class="col-md-2 "><%= match.matchId %></div>
-                            <div class="col-md-4"><%= match.home_team.team_name%> VS <%= match.visit_team.team_name %></div>
-                            <div class="col-md-2" data-rate="<%= match.rate %>" data-e="result" data-result="<%= match.result %>"></div>
+                            <div class="col-md-5">
+                                <div class="pull-left" style="width:20px"><%= match.ball %></div><%= match.home_team.team_name%> VS <%= match.visit_team.team_name %>
+                              &nbsp;&nbsp;
+                                <%= match.home_team.score || "" %> - <%= match.visit_team.score || "" %>
+                            </div>
+                            <div class="col-md-3" data-ball="<%= match.ball %>" data-rate="<%= match.rate %>" data-e="result" data-result="<%= match.result %>"></div>
 
                         </div>
                         <% } %>
 
                     </td>
+                    <td><%=  item.winnings * 2 * item.multi    %></td>
                     <td><%= item.multi * 2 %></td>
                 </tr>
 
