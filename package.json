@@ -23,9 +23,9 @@
         "log": "*",
         "underscore": "*",
         "iconv-lite":"*",
-        "body-parser":"*",
-        "express-session":"*",
-        "connect-redis":"*",
+        "body-parser":"latest",
+        "express-session":"latest",
+        "connect-redis":"latest",
         "morgan":"*"
 
     }

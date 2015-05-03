@@ -4,9 +4,10 @@
        <a href="/user/login.html">Login</a>
 
        <% } else {%>
-         <%= user.email %> Amount:<%= user.amount %>
-        <a href="/bet/list.html" >BetList</a>
-        <a href="/" >Bet</a>
+         <%= user.email %> 账户余额:<%= user.amount %>
+        <a href="/bet/list.html" >已投注</a>
+        <a href="/user/index.html" >个人中心</a>
+        <a href="/" >投注</a>
        <% } %>
    </div>
 </div>

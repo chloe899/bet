@@ -13,7 +13,7 @@ var ParseRecord = Models.ParseRecord;
 
 var now = Date.now();
 
-var startDate = Date.parse("2015-01-01");
+var startDate = Date.parse("2015-04-01");
 startDate = new Date(startDate);
 
 
@@ -24,7 +24,7 @@ function startOne(){
     start(startDate);
 }
 
-function start(date){
+function start(date, callback){
     if(date.valueOf() < now){
         var day = date.getDate();
         var month = date.getMonth();
@@ -47,7 +47,7 @@ function start(date){
             });
         }, function(exists, cb){
             if(exists){
-                cb(null);
+                cb("file exits");
             }else{
 
                 var url = "http://trade.500.com/jczq/?date=" + fileName  +"&playtype=both"
@@ -62,17 +62,19 @@ function start(date){
             }
         }], function(err, body){
 
-
+             if(err){
+                 log.error(err);
+             }
             if(body){
 
                 console.log("filePath request complete, %s", filePath);
                 fs.writeFile(filePath,body, function(err){
 
-                    startOne()
+                    callback()
                 })
             }else{
                 console.log("filePath exists , %s", filePath);
-                startOne();
+                callback();
             }
 
         });
@@ -85,7 +87,7 @@ function start(date){
          console.log("complete date is %s", date);
         //process.exit(0);
 
-        return
+        callback();
 
     }
 
@@ -108,10 +110,33 @@ async.waterfall([function(cb){
 }], function(err, result){
 
 
-    startOne();
-    startOne();
-    startOne();
-    startOne();
+
+    var fileArr = [];
+    while(true){
+        var now = Date.now();
+        var day = startDate.getDate();
+        startDate.setDate(day+1);
+        if(!(startDate.valueOf() < now)){
+            //log.debug("game found is :%s", gameFound);
+            ///log.debug(pathArr.length);
+            break;
+        }
+        var date =  new Date(startDate.toUTCString());
+        fileArr.push(date);
+    }
+
+    async.each(fileArr, function(date, cb){
+
+        start(date,function(err,r){
+           cb(null);
+        });
+    }, function(err, results){
+
+        log.debug("all request complete");
+         process.exit(0);
+
+    });
+
 
 });
 

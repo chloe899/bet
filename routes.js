@@ -12,6 +12,7 @@ that.init = function(app){
     app.post("/user/login", userCtrl.login);
     app.get("/user/signup.html",userCtrl.showSignup);
     app.post("/user/signup.html",userCtrl.signup);
+    app.get("/user/index.html",userCtrl.showMe);
     app.post("/bet/add",betCtrl.addBet);
     app.get("/bet/list.html",betCtrl.showBetList);
 

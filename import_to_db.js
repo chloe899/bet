@@ -187,6 +187,7 @@ function parseGameInfo(trContent){
 
 function doParse(filePath, callback){
 
+    var url = util.getUrlByFilePath(filePath);
     async.waterfall([
 
         function(cb){
@@ -297,7 +298,8 @@ function doParse(filePath, callback){
                         }
                         doc.data = result;
                         doc.end_date = new Date(Date.parse(result.pendtime));
-                        doc.match_date = result.match_date;
+                        doc.match_date = result.team_info.match_date;
+                        doc.data_url = url;
                         doc.save(function(err, doc){
                             //log.debug(result);
                             //log.debug("save doc,dos is %s", doc);
@@ -309,7 +311,8 @@ function doParse(filePath, callback){
                         log.debug("create new");
                         doc = {game_id:result.zid,data:result};
                         doc.end_date = new Date(Date.parse(result.pendtime));
-                        doc.match_date = result.match_date;
+                        doc.match_date = result.team_info.match_date;
+                        doc.data_url = url;
                         Game.create(doc, function(err,doc){
                             cb();
                         });

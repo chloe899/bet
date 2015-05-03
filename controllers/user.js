@@ -54,7 +54,7 @@ that.login  = function(req, res, next){
             res.send({error:true, reason:err});
         }else{
             req.session.user= user;
-            res.send(user);
+            res.redirect("user/index.html");
         }
 
 
@@ -127,6 +127,38 @@ that.signup = function(req, res, next){
     });
 
 
+
+
+
+};
+
+
+
+that.showMe = function(req, res ,next){
+
+    if(!commonUtil.isLogin(req, res, false)){
+        commonUtil.badRequest(res, "please login");
+        return;
+    }
+    var  User = Models.User;
+
+    var user = req.session.user;
+
+    async.waterfall([function(cb){
+
+        User.findOne({_id:user._id}, function(err, doc){
+
+            cb(err, doc);
+
+        });
+
+    }], function(err, user){
+
+        req.session.user = user;
+        var data = {err_msg:err,user:user};
+        res.render("user/profile.html", data)
+
+    })
 
 
 
