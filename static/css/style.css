@@ -78,3 +78,20 @@ li {
     -webkit-box-shadow: none;
     box-shadow: none;
 }
+
+.bet-result {
+    margin-right: 3px;
+    margin-bottom: 2px;
+    border: 1px solid #ccc;
+    text-align: center;
+    color: #333;
+    background: #e5e5e5;
+    width:100px;
+}
+
+.high-light{
+
+    border: 1px solid #cb4040;
+    background: #b90000;
+    color: #fff;
+}

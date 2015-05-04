@@ -74,13 +74,28 @@ app.get("/", function(req, res, next){
     if(query.t){
         l = 1000;
         var name = query.t;
-       mongoQery["$or"] = [{"data.team_info.home_team.team_name":name},
-            {"data.team_info.visit_team.team_name":name},
+
+        if(typeof(name) == "string"){
+
+            mongoQery["$or"] = [{"data.team_info.home_team.team_name":name},
+                {"data.team_info.visit_team.team_name":name},
             ];
+        }else{
+            mongoQery["$or"] = [{"data.team_info.home_team.team_name":{"$in":name}},
+                {"data.team_info.visit_team.team_name":{"$in":name}},
+            ];
+        }
+
     }
     if(query.l){
         l = 1000;
-        mongoQery["data.lg"] = query.l;
+
+        if(typeof(query.l) == "string"){
+            mongoQery["data.lg"] = query.l;
+        }else{
+            mongoQery["data.lg"] = {"$in":query.l};
+        }
+
     }
     if(query.a){
       mongoQery.end_date =  {"$gt":new Date()};

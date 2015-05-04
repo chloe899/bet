@@ -28,6 +28,8 @@
                 var result = $(this).data("result");
                 var rate = $(this).data("rate");
                 var ball = $(this).data("ball");
+                var score = $(this).data("score");
+                var scoreArr = score.split("-");
                 //胜平负
                 var descObj = {
                     "0":"负",
@@ -38,13 +40,29 @@
 
                 var txt = descObj[result];
                 txt += "(" + rate + ")";
+                if(scoreArr.length){
+                    var hScore = +scoreArr[0];
+                    var vScore = +scoreArr[1];
+                    hScore = hScore + (+(ball));
+                   var r = 0;
+                   if(hScore > vScore){
+                       r = 3;
+                   }else if(hScore == vScore){
+                       r = 1;
+                   }
+                  if(r == result){
+                      $(this).addClass("high-light");
+                  }
 
+                }
                 $(this).html(txt);
 
 
             });
             formatDate();
         });
+
+
 
 
 
@@ -64,8 +82,6 @@
                 <div class="col-md-12">
                     <button class="btn-primary btn pull-right">OK</button>
                 </div>
-
-
             </div>
             <table class="table">
                 <tr>
@@ -97,25 +113,26 @@
                             <div class="col-md-2 "><%= match.matchId %></div>
                             <div class="col-md-5">
                                 <div class="pull-left" style="width:20px"><%= match.ball %></div><%= match.home_team.team_name%> VS <%= match.visit_team.team_name %>
-                              &nbsp;&nbsp;
+                                &nbsp;&nbsp;
                                 <%= match.home_team.score || "" %> - <%= match.visit_team.score || "" %>
                             </div>
-                            <div class="col-md-3" data-ball="<%= match.ball %>" data-rate="<%= match.rate %>" data-e="result" data-result="<%= match.result %>"></div>
-
-                        </div>
-                        <% } %>
-
-                    </td>
-                    <td><%=  item.winnings * 2 * item.multi    %></td>
-                    <td><%= item.multi * 2 %></td>
-                </tr>
-
-                <% } %>
-
-            </table>
+                            <div class="col-md-1 real-result"></div>
+                            <div data-score="<%= match.home_team.score || "" %>-<%= match.visit_team.score || "" %>" class="col-md-3 bet-result"  data-ball="<%= match.ball %>" data-rate="<%= match.rate %>" data-e="result" data-result="<%= match.result %>"></div>
 
         </div>
+        <% } %>
+
+        </td>
+        <td><%=  item.winnings * 2 * item.multi    %></td>
+        <td><%= item.multi * 2 %></td>
+        </tr>
+
+        <% } %>
+
+        </table>
+
     </div>
+</div>
 
 </div>
 </body>

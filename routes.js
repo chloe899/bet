@@ -1,5 +1,6 @@
 var userCtrl = require("./controllers/user");
 var betCtrl = require("./controllers/bet");
+var teamCtrl = require("./controllers/match");
 
 
 
@@ -15,6 +16,9 @@ that.init = function(app){
     app.get("/user/index.html",userCtrl.showMe);
     app.post("/bet/add",betCtrl.addBet);
     app.get("/bet/list.html",betCtrl.showBetList);
+
+    app.get("/team/all_team/", teamCtrl.getAllTeam);
+    app.get("/team/all_league/", teamCtrl.getAllLeague);
 
 };
 

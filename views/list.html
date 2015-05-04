@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
     <title>Bet</title>
     <% include public/common.html %>
+    <script type="text/javascript" src="/js/select2.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/select2.min.css" />
     <style type="text/css">
         .rate{
 
@@ -80,6 +82,45 @@
             formatDate();
 
 
+
+
+            var url = "/team/all_league";
+            spectoAjax({url:url, "method":"GET", success:function(data){
+
+                console.log(typeof(data),data.length);
+                var options = {data:data,create:true,searchField:"text"};
+                options.tags = true;
+                var l = "<%= l %>";
+                if(l){
+                    l = l.split(",");
+                    _.each(l, function(item){
+                       var html = "<option selected>" + item +"</option>"
+                        $("[data-e='l']").append(html);
+                    });
+                }
+
+                $("[data-e='l']").select2(options);
+
+            }}, false);
+
+            var l = "<%= l %>";
+            var url1 = "/team/all_team?l=" + l;
+            spectoAjax({url:url1, "method":"GET", success:function(data){
+
+                var l = "<%= t %>";
+                if(l){
+                    l = l.split(",");
+                    _.each(l, function(item){
+                        var html = "<option selected>" + item +"</option>"
+                        $("[data-e='team']").append(html);
+                    });
+                }
+                console.log(typeof(data),data.length);
+                var options = {data:data,create:true,searchField:"text"};
+                options.tags = true;
+                $("[data-e='team']").select2(options);
+
+            }}, false);
         });
 
     </script>
@@ -87,15 +128,70 @@
 <body>
 <% include public/header.html %>
 <div class="container">
-    <form  class="col-md-4 center-block">
-        StartDate:<input name="s" value="<%= s %>" type="text" /> <br />
-        EndDate:<input name="e" value="<%= e %>" type="text" /> <br />
-        League:<input name="l" value="<%= l %>" type="text" /> <br />
-        TeamName:<input name="t" value="<%= t %>" type="text" />
-        Active:<input name="a"  value="1" <%= a ? "checked" : "" %> type="checkbox" />
-        <button type="submit">Query</button>
-    </form>
+    <form  class="form-horizontal center-block">
 
+        <div class="form-group">
+            <label for="inputS" class="col-md-2 control-label">StartDate</label>
+            <div class="col-md-10">
+                <input data-p="date-i" id="inputS" class="form-control" data-format="YYYY-MM-DD" name="s" value="<%= s %>" type="text" />
+            </div>
+        </div>
+
+         <div class="form-group">
+             <label for="inputE" class="col-md-2 control-label">EndDate</label>
+             <div class="col-md-10">
+                 <input data-p="date-i" class="form-control" data-format="YYYY-MM-DD" id="inputE"  name="e" value="<%= e %>" type="text" />
+             </div>
+
+        </div>
+        <div class="form-group">
+
+            <label for="inputL" class="col-md-2 control-label">League</label>
+            <div class="col-md-10">
+                <select class="col-md-12 form-control" id="inputL" data-e="l" name="l" multiple>
+
+                </select>
+            </div>
+
+        </div>
+        <div class="form-group">
+
+            <label for="inputT" class="col-md-2 control-label">TeamName</label>
+            <div class="col-md-8">
+                <select class="col-md-12" id="inputT" multiple="multiple" data-e="team" name="t" value="<%= t %>" ></select>
+
+            </div>
+            <div class="col-md-2">
+                Active:<input name="a"  value="1" <%= a ? "checked" : "" %> type="checkbox" />
+            </div>
+
+
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit">Query</button>
+            </div>
+
+        </div>
+
+    </form>
+</div>
+<div class="modal fade" id="team-select" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="container">
     <div class="row">

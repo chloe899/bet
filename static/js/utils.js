@@ -11,6 +11,18 @@ function formatDate(){
         $(this).html( p.format("YYYY-MM-DD HH:mm:ss"));
 
     });
+
+    $("[data-p='date-i']").each(function(){
+        var d = $(this).val();
+        if(d){
+            var p = moment(d);
+            $(this).val( p.format("YYYY-MM-DD"));
+        }
+
+
+
+
+    });
 }
 
 
