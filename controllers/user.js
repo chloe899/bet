@@ -54,7 +54,7 @@ that.login  = function(req, res, next){
             res.send({error:true, reason:err});
         }else{
             req.session.user= user;
-            res.redirect("user/index.html");
+            res.redirect("/user/index.html");
         }
 
 

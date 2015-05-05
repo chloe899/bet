@@ -314,7 +314,7 @@
             spectoAjax({data:data,url:"/bet/add",success:function(){
 
                 //location.href = "/bet/list.html";
-
+                alert("Success");
 
             }}, true);
 
