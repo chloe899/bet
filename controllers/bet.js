@@ -114,7 +114,7 @@ that.showBetList = function(req, res, next){
                item.winnings *= m.rate;
 
             });
-            item.winnings = +item.winnings.toFixed(2);
+            item.winnings = item.winnings.toFixed(2);
 
         });
         var data = {list:docs};

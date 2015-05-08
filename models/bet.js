@@ -13,6 +13,8 @@ ModelSchema = new Schema({
     created_at:Date,
     multi:Number,
     status:String,
+    is_win:Boolean,
+    has_award:Boolean,//是否已经发奖
     match_count:Number
 
 });

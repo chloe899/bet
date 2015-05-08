@@ -88,6 +88,7 @@
                     <th>GameName<span class="caret"></span></th>
                     <th>Info</th>
                     <th>Winnings</th>
+                    <th>Status</th>
                     <th>Total</th>
                 </tr>
                 <tr>
@@ -123,7 +124,8 @@
         <% } %>
 
         </td>
-        <td><%=  item.winnings * 2 * item.multi    %></td>
+        <td><%=  (item.winnings * 2 * item.multi).toFixed(2)    %></td>
+        <td><%=  item.status == "complete" ? (item.is_win ? "中奖" : "未中奖") : "等待开奖"    %></td>
         <td><%= item.multi * 2 %></td>
         </tr>
 
