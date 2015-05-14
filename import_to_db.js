@@ -436,6 +436,7 @@ async.waterfall([function(cb){
         var completeDate = Date.now();
         var timeUse = completeDate - pStartDate;
         log.debug("time use: %s ms", timeUse);
+        process.exit(0);
 
     });
 
