@@ -1,6 +1,9 @@
-var that = {};
-
-exports.User = require("./user");
-exports.Bet = require("./bet");
 exports.Match = require("./game");
-exports.ParseRecord = require("./parse_record");
+exports.Alliance = require('./alliance');
+exports.Bet = require('./bet');
+exports.Game = require('./game');
+exports.League = require('./league');
+exports.Order = require('./order');
+exports.ParseRecord = require('./parse_record');
+exports.Team = require('./team');
+exports.User = require('./user');
