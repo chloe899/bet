@@ -12,6 +12,7 @@ ModelSchema = new Schema({
     name_en:String,
     created_at:Date,
     website:String,
+    country:String,
     status:String,
     nick_name:String,
     manager:String,//是否已经发奖
