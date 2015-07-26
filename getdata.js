@@ -13,7 +13,7 @@ var ParseRecord = Models.ParseRecord;
 
 var now = Date.now();
 
-var startDate = Date.parse("2015-04-01");
+var startDate = Date.parse("2014-01-01");
 startDate = new Date(startDate);
 
 
@@ -22,6 +22,34 @@ function startOne(){
     var day = startDate.getDate();
     startDate.setDate(day+1);
     start(startDate);
+}
+
+function getFilePath(fileName, callback){
+    var arr = fileName.split("-");
+
+    var fileDir =  "data/bet/" + arr[0] + "/" +arr[1] + "/";
+    var result =  fileDir + fileName;
+    var dir = "data/bet/";
+    async.each(arr.slice(0,2), function(name, cb){
+
+         dir = dir + name + "/" ;
+        log.debug(dir);
+        fs.mkdir(dir, function(err, result){
+            cb(null, err, result);
+        })
+
+
+    }, function(err){
+        if(callback){
+            callback(null, result);
+        }
+
+
+
+    });
+    return result;
+
+
 }
 
 function start(date, callback){
@@ -37,39 +65,46 @@ function start(date, callback){
             day = "0" + day;
         }
         var fileName = date.getFullYear() + "-" + month + "-" + day;
-        var filePath = "data/" + fileName;
-        async.waterfall([function(cb){
+        var filePath = getFilePath(fileName);
+        async.waterfall([
+            function(cb) {
+                getFilePath(fileName, cb)
 
-            var query = {name:filePath,complete:true};
-            ParseRecord.findOne(query, function(err, doc){
+            },
+            function(path, cb){
+                filePath = path;
+                var query = {name:filePath,complete:true};
+                ParseRecord.findOne(query, function(err, doc){
 
-                cb(null, doc)
-            });
-        }, function(exists, cb){
-            if(exists){
-                cb("file exits");
-            }else{
-
-                var url = "http://trade.500.com/jczq/?date=" + fileName  +"&playtype=both"
-                request({pool:{maxSockets: 200},url:url,method:"GET",encoding:null}, function(err, res, body){
-
-                    cb(err, body);
-
-
-
+                    cb(null, doc)
                 });
 
-            }
-        }], function(err, body){
+            }, function(exists, cb){
+                if(exists){
+                    cb("file exits");
+                }else{
 
-             if(err){
-                 log.error(err);
-             }
+                    var url = "http://trade.500.com/jczq/?date=" + fileName  +"&playtype=both"
+                    request({pool:{maxSockets: 200},url:url,method:"GET",encoding:null}, function(err, res, body){
+
+                        cb(err, body);
+
+
+
+                    });
+
+                }
+            }], function(err, body){
+
+            if(err){
+                log.error(err);
+            }
             if(body){
 
-                console.log("filePath request complete, %s", filePath);
+                log.debug("filePath request complete, %s", filePath);
+                //log.debug(body);
                 fs.writeFile(filePath,body, function(err){
-
+                    log.debug(err);
                     callback()
                 })
             }else{
@@ -84,7 +119,7 @@ function start(date, callback){
 
     }
     else{
-         console.log("complete date is %s", date);
+        console.log("complete date is %s", date);
         //process.exit(0);
 
         callback();
@@ -128,12 +163,12 @@ async.waterfall([function(cb){
     async.each(fileArr, function(date, cb){
 
         start(date,function(err,r){
-           cb(null);
+            cb(null);
         });
     }, function(err, results){
 
         log.debug("all request complete");
-         process.exit(0);
+        process.exit(0);
 
     });
 

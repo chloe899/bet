@@ -148,7 +148,7 @@ app.get("/", function(req, res, next){
         data.a = query.a;
         data.s = start || "";
         data.e = endDate || "";
-        log.debug(data);
+       // log.debug(data);
         data.user = req.session.user;
         res.render("list.html",data);
 
