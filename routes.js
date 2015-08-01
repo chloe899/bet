@@ -1,6 +1,7 @@
 var userCtrl = require("./controllers/user");
 var betCtrl = require("./controllers/bet");
 var teamCtrl = require("./controllers/match");
+var leagueCtrl =  require("./controllers/league");
 
 
 
@@ -19,6 +20,9 @@ that.init = function(app){
 
     app.get("/team/all_team/", teamCtrl.getAllTeam);
     app.get("/team/all_league/", teamCtrl.getAllLeague);
+
+    app.get("/league/match_list.html", leagueCtrl.showMatchList);
+    app.get("/league/index.html", leagueCtrl.showIndex);
 
 };
 

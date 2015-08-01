@@ -53,6 +53,46 @@ function parse(){
 
 }
 
+var that = {};
+that.updateMatchResult = function(callback){
+    var MatchDay = Models.MatchDay;
+    MatchDay.find({match_result:{"$exists":true}}, function(err, results){
+
+
+            async.eachSeries(results, function(match, cb){
+
+
+                    match.match_result = match.match_result.clubMatchResultTooltip;
+                    match.save({match_result:  match.match_result}, function(err, result){
+                        log.debug("update one match result complete");
+                        cb(err, result);
+                    });
+
+
+
+
+            }, function(err, result){
+
+                log.debug("update match result all complete");
+
+
+
+
+            });
+
+
+
+
+
+
+        }
+    )
+
+
+
+
+};
+
 
 
 async.waterfall([function(cb){
@@ -69,5 +109,6 @@ async.waterfall([function(cb){
 
 
 }], function(err, result){
-    parse();
+    //parse();
+    that.updateMatchResult();
 });

@@ -21,4 +21,4 @@ ModelSchema = new Schema({
     data_url:String
 });
 
-module.exports = mongoose.model('Match', ModelSchema, "match");
+module.exports = mongoose.model('Game', ModelSchema, "game");

@@ -1,6 +1,7 @@
 <div class="container site-nav">
-   <div class="site-nav-bd">
+   <div class="row site-nav-bd">
     <% if(!locals.user) { %>
+       <a href="/">Home</a>
        <a href="/user/login.html">Login</a>
 
        <% } else {%>
@@ -10,4 +11,12 @@
         <a href="/" >投注</a>
        <% } %>
    </div>
+    <div class="row">
+        <ul class="nav nav-pills nav-justified">
+
+           <li role="presentation"><a href="/league/index.html">联赛</a></li>
+           <li role="presentation"><a href="/league/match_list.html">MatchList</a></li>
+
+        </ul>
+    </div>
 </div>
