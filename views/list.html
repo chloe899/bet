@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
-    <title>Bet</title>
+    <title>Bet And Match Results Analysis</title>
     <% include public/common.html %>
     <script type="text/javascript" src="/js/select2.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/select2.min.css" />
@@ -75,6 +75,19 @@
                  }else{
                      $(".detail").removeClass("fixed").addClass("fixed");
                  }
+
+            });
+
+            $("#btn_analysis").on("click", function(){
+
+                $("form:eq(0)").attr("action","/bet/analysis.html");
+                $("form:eq(0)").submit();
+
+            });
+            $("#btn_query").on("click", function(){
+
+                $("form:eq(0)").attr("action","/");
+                //$("form:eq(0)").submit();
 
             });
 
@@ -169,8 +182,8 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <button type="submit">Query</button>
-                <button type="button">分析</button>
+                <button type="submit" id=btn_query>Query</button>
+                <button type="button" id="btn_analysis">分析</button>
             </div>
 
         </div>

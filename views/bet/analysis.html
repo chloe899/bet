@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
-    <title>Bet</title>
-    <% include public/common.html %>
+    <title>Bet And Match Results Analysis</title>
+    <% include ../public/common.html %>
     <script type="text/javascript" src="/js/select2.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/select2.min.css" />
     <style type="text/css">
@@ -20,113 +20,10 @@
 
         }
     </style>
-    <script type="text/javascript">
-        $(document).ready(function(){
 
-            var lgArr = {}
-            $("[data-e='lg']").each(function(i){
-
-                var item = $(this);
-                var name = item.html();
-                lgArr[name] = lgArr[name] || 0;
-                lgArr[name]++;
-            });
-
-
-            var t = '<label for="lg{{number}}"><input id="lg{{number}}" m="{{name}}" type="checkbox" checked="checked" class="lg_ck">{{name}}<span class="gray">({{count}}场)</span></label>'
-
-            var html = '<a href="javascript: void(0)" id="link161">全清</a>';
-            var i = 0;
-            _.each(lgArr, function(val, key){
-                i++;
-                var o = {name:key, count:val,number:i}
-                html += Mustache.render(t, o);
-
-            });
-
-            $("#match_s").html(html);
-
-            $(".lg_ck").on('click', function(){
-
-                var name = $(this).attr("m");
-                console.log("[data-lg='" + name +"']");
-                if($(this).prop("checked")){
-                    $("[data-lg='" + name +"']").show();
-                }else{
-                    $("[data-lg='" + name +"']").hide();
-                }
-
-
-            });
-
-            $("#link161").on("click", function(){
-                $("[data-e='match']").hide();
-                $(".lg_ck").prop("checked", false);
-
-            });
-
-            $(window).on("scroll", function(){
-
-                var top =   $(window).scrollTop();
-                var height = $(window).height();
-                var dheight = $(document).height();
-                if((top + height) + 100 > dheight){
-                    $(".detail").removeClass("fixed");
-                }else{
-                    $(".detail").removeClass("fixed").addClass("fixed");
-                }
-
-            });
-
-
-            formatDate();
-
-
-
-
-            var url = "/team/all_league";
-            spectoAjax({url:url, "method":"GET", success:function(data){
-
-                console.log(typeof(data),data.length);
-                var options = {data:data,create:true,searchField:"text"};
-                options.tags = true;
-                var l = "<%= l %>";
-                if(l){
-                    l = l.split(",");
-                    _.each(l, function(item){
-                        var html = "<option selected>" + item +"</option>"
-                        $("[data-e='l']").append(html);
-                    });
-                }
-
-                $("[data-e='l']").select2(options);
-
-            }}, false);
-
-            var l = "<%= l %>";
-            var url1 = "/team/all_team?l=" + l;
-            spectoAjax({url:url1, "method":"GET", success:function(data){
-
-                var l = "<%= t %>";
-                if(l){
-                    l = l.split(",");
-                    _.each(l, function(item){
-                        var html = "<option selected>" + item +"</option>"
-                        $("[data-e='team']").append(html);
-                    });
-                }
-                console.log(typeof(data),data.length);
-                var options = {data:data,create:true,searchField:"text"};
-                options.tags = true;
-                $("[data-e='team']").select2(options);
-
-            }}, false);
-        });
-
-    </script>
 </head>
 <body>
-<% include public/header.html %>
+<% include ../public/header.html %>
 <div class="container">
     <form  class="form-horizontal center-block">
 
@@ -177,23 +74,6 @@
 
     </form>
 </div>
-<div class="modal fade" id="team-select" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -206,13 +86,13 @@
             </div>
             <table class="table">
                 <tr>
-                    <th>GameName<span class="caret"></span></th>
-                    <th>Date</th>
-                    <th>HomeTeam</th>
-                    <th>VisitTeam</th>
-                    <th>Score</th>
-                    <th>Rate</th>
-                    <th>Link</th>
+                    <th>Team<span class="caret"></span></th>
+                    <th>胜率</th>
+                    <th>平率</th>
+                    <th>负率</th>
+                    <th>-1胜率</th>
+                    <th>-1平率</th>
+                    <th>－负率</th>
                 </tr>
                 <tr>
                     <td id="match_s" colspan="7">
@@ -224,32 +104,15 @@
                 <% for(var i = 0; i < list.length; i++){ var item = list[i] %>
 
 
-                <tr data-e="match" data-lg="<%= item.data.lg %>" data-match-id="<%= item.game_id %>">
-                    <td data-e="lg"><%= item.data.lg %></td>
-                    <td data-p="date"><%= item.data.team_info.match_date %></td>
-                    <td><%= item.home_team && item.home_team.team_name %>  <small class="rank"><%= item.home_team && item.home_team.rank || "-"%></small></td>
-                    <td><%= item.visit_team && item.visit_team.team_name %><small class="rank"><%= item.visit_team && item.visit_team.rank || "-"%></small></td>
-                    <td><%= item.home_team && item.home_team.score || "-"%>:<%= item.visit_team && item.visit_team.score || "-" %></td>
-                    <td>
+                <tr data-e="match">
+                    <td><%= item.team %></td>
+                    <td><%= item.win_rate %></td>
+                    <td><%= item.lost_rate %></td>
+                    <td><%= item.drawn_rate %></td>
+                    <td><%= item.win_rate1 %></td>
+                    <td><%= item.lost_rate1 %></td>
+                    <td><%= item.drawn_rate1 %></td>
 
-                        <% for(var j = 0; j < item.rates.length; j++){ var rate =  item.rates[j] %>
-
-                        <div class="row">
-
-                            <div class="col-md-1 "><%= rate["name"]%></div>
-                            <div class="col-md-8">
-                                <span data-r="3" class="rate"><%= rate["3"]%></span>
-                                <span data-r="1" class="rate"><%= rate["1"] %></span>
-                                <span data-r="0" class="rate"><%= rate["0"] %></span>
-                            </div>
-
-                        </div>
-                        <% } %>
-
-
-
-                    </td>
-                    <td><a href="<%= item.data.href %>" >View</a></td>
 
                 </tr>
 
