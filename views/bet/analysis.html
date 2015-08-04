@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
+    <title>Bet And Match Results Analysis</title>
+    <% include ../public/common.html %>
+    <script type="text/javascript" src="/js/select2.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/select2.min.css" />
+    <style type="text/css">
+        .rate{
+
+            display: inline-block;
+            width: 35px;
+            font-family: Tahoma, Geneva, sans-serif;
+        }
+        .detail{
+
+            bottom:0;
+
+        }
+    </style>
+
+</head>
+<body>
+<% include ../public/header.html %>
+<div class="container">
+    <form  class="form-horizontal center-block">
+
+        <div class="form-group">
+            <label for="inputS" class="col-md-2 control-label">StartDate</label>
+            <div class="col-md-10">
+                <input data-p="date-i" id="inputS" class="form-control" data-format="YYYY-MM-DD" name="s" value="<%= s %>" type="text" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inputE" class="col-md-2 control-label">EndDate</label>
+            <div class="col-md-10">
+                <input data-p="date-i" class="form-control" data-format="YYYY-MM-DD" id="inputE"  name="e" value="<%= e %>" type="text" />
+            </div>
+
+        </div>
+        <div class="form-group">
+
+            <label for="inputL" class="col-md-2 control-label">League</label>
+            <div class="col-md-10">
+                <select class="col-md-12 form-control" id="inputL" data-e="l" name="l" multiple>
+
+                </select>
+            </div>
+
+        </div>
+        <div class="form-group">
+
+            <label for="inputT" class="col-md-2 control-label">TeamName</label>
+            <div class="col-md-8">
+                <select class="col-md-12" id="inputT" multiple="multiple" data-e="team" name="t" value="<%= t %>" ></select>
+
+            </div>
+            <div class="col-md-2">
+                Active:<input name="a"  value="1" <%= a ? "checked" : "" %> type="checkbox" />
+            </div>
+
+
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit">Query</button>
+                <button type="button">分析</button>
+            </div>
+
+        </div>
+
+    </form>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="container" >
+                <div class="col-md-12">
+                    <button class="btn-primary btn pull-right">OK</button>
+                </div>
+
+
+            </div>
+            <table class="table">
+                <tr>
+                    <th>Team<span class="caret"></span></th>
+                    <th>胜率</th>
+                    <th>平率</th>
+                    <th>负率</th>
+                    <th>-1胜率</th>
+                    <th>-1平率</th>
+                    <th>－负率</th>
+                </tr>
+                <tr>
+                    <td id="match_s" colspan="7">
+
+
+                    </td>
+                </tr>
+
+                <% for(var i = 0; i < list.length; i++){ var item = list[i] %>
+
+
+                <tr data-e="match">
+                    <td><%= item.team %></td>
+                    <td><%= item.win_rate %></td>
+                    <td><%= item.lost_rate %></td>
+                    <td><%= item.drawn_rate %></td>
+                    <td><%= item.win_rate1 %></td>
+                    <td><%= item.lost_rate1 %></td>
+                    <td><%= item.drawn_rate1 %></td>
+
+
+                </tr>
+
+
+
+                <% } %>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -8,13 +8,15 @@ var mongoose = require('mongoose'),
 
 
 ModelSchema = new Schema({
-    name:String,
-    external_name:String,  //对外名称
+    league_id:String,
+    league_name:String,
     season:String,
+    club_name:String,  //对外名称
+    club_id:String,
     created_at:Date,
-    last_update:Boolean,//是否已经发奖
-    club_count:Number  //俱乐部数量
+    last_update:Boolean//是否已经发奖
+
 
 });
 //{victory,draw，lost}
-module.exports = mongoose.model('League', ModelSchema, "league");
+module.exports = mongoose.model('LeagueClub', ModelSchema, "league_club");
