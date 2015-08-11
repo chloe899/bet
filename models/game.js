@@ -16,6 +16,7 @@ ModelSchema = new Schema({
     rate:Object,
     data:Object,
     match_id:String,
+    game_id:String,
     end_date:Date,
     match_date:Date,
     data_url:String

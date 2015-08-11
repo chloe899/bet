@@ -71,10 +71,10 @@ that.showBetList = function(req, res, next){
         });
 
     }, function(docs, cb){
-        log.debug(docs);
+        //log.debug(docs);
         var bets = _.pluck(docs, "matches");
         bets = Array.prototype.concat.apply([],bets);
-        log.debug(bets);
+        //log.debug(bets);
 
         var matchIds = _.map(bets, function(item){
 
@@ -87,11 +87,15 @@ that.showBetList = function(req, res, next){
         Match.find(query, function(err, matches){
             _.each(bets, function(bet){
                 var match = _.findWhere(matches, {game_id: "" + bet.matchId});
-                match = JSON.parse(JSON.stringify(match));
                 log.debug(match);
+                //match = JSON.parse(JSON.stringify(match));
+                log.debug(JSON.stringify(match));
                 if(match){
                     bet.home_team = match.data.team_info.home_team;
                     bet.visit_team = match.data.team_info.visit_team;
+                } else{
+                    bet.home_team = {team_info:{}};
+                    bet.visit_team = {team_info:{}};
                 }
 
             });
@@ -106,7 +110,7 @@ that.showBetList = function(req, res, next){
 
     }], function(err, docs){
 
-        log.debug(docs);
+       // log.debug(docs);
         _.each(docs, function(item){
 
             _.each(item.matches, function(m){
