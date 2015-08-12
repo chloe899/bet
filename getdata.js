@@ -13,7 +13,7 @@ var ParseRecord = Models.ParseRecord;
 
 var now = Date.now();
 
-var startDate = Date.parse("2014-01-01");
+var startDate = Date.parse("2015-08-01");
 startDate = new Date(startDate);
 
 
