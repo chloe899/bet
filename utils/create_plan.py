@@ -6,35 +6,43 @@ from os import  path
 import xlrd
 import pymongo,string,time
 from datetime import  datetime as dt
+from datetime import  timedelta
 from pymongo import Connection
 
 conn = pymongo.Connection('localhost',port=27017)
 db = conn.lottery
+last_plan = db.request_plan.find_one({},{"created_at":-1});
+date = dt.now()
+now = dt.now()
+oneday = timedelta(days=1)
+if last_plan is not None :
+      #print last_plan
+      date  = last_plan["created_at"]
+date = dt(2015,07,01)
+def add_plan(plan_date):
+    file_path = "data/bet/"
+    year = plan_date.strftime("%Y")
+    month = plan_date.strftime("%m")
+    day = plan_date.strftime("%d")
+    dir_one = file_path + year
+    dir_two = dir_one + "/" + month
+    name = plan_date.strftime("%Y-%m-%d")
+    full_path = dir_two + "/" + name
+    url = "http://trade.500.com/jczq/?date=" + name  +"&playtype=both"
+    plan = db.request.find_one({"url" : url})
+    if plan is None:
+        db.request_plan.insert({"url":url,"created_at":now, "file_path":full_path})
+    if not path.exists(dir_one):
+        os.mkdir(dir_one)
+    if not path.exists(dir_two):
+        os.mkdir(dir_two)    
+    print url
 
 
 while True :
+  if date > now :
+      break
+  add_plan(date)
+  date = date + oneday
 
-for item in records:
-    filename = path.basename(item["name"])
-    url = "http://trade.500.com/jczq/?date=" + filename  +"&playtype=both"
-    arr = filename.split("-")
-    arr = arr[0:2]
-    file_path = "data/bet/" + string.join(arr, "/")
-    file_path = file_path + "/" + filename
-
-    r = plan.find_one({"url":url})
-    #print r is None
-    if r is None :
-        #print "url:{},path:{}".format(url, file_path)
-        now = dt.now()
-        complete = path.exists(file_path)
-        plan.insert({"created_at":now, "complete":complete, "last_modified":now, "url":url, "file_path":file_path})
-    else :
-        print r
-        print "exists"
-    oldPath = "data/" + filename
-
-
-
-print "complete, eixit 88"
-exit(0)
+add_plan(now)
