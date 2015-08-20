@@ -12,6 +12,9 @@ ModelSchema = new Schema({
     complete:Boolean,
     created_at:Date,
     match_count:Number,
+    "last_modified":Date,
+    "file_type":String,
+    "file_path":String,
     complete_date:Date
 });
 //{victory,draw，lost}

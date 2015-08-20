@@ -17,6 +17,5 @@ for file in files:
         old_file = "data/" + file
         print("old file:{}, new file:{}".format(old_file, new_file))
         os.rename(old_file, new_file)
-    print file
 print "complete";
 

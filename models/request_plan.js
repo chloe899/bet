@@ -10,6 +10,9 @@ var mongoose = require('mongoose'),
 ModelSchema = new Schema({
     type:String,
     url:String,
+    file_path:String,
+    last_modified:Date,
+    parse_complete:Boolean,
     complete:Boolean,
     created_at:{type:Date, default:Date.now},
     completed_at:Date
