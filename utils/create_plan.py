@@ -11,14 +11,15 @@ from pymongo import Connection
 
 conn = pymongo.Connection('localhost',port=27017)
 db = conn.lottery
-last_plan = db.request_plan.find_one({},{"created_at":-1});
+last_plan = db.request_plan.find_one({},{"created_at":-1})
+print last_plan
 date = dt.now()
 now = dt.now()
 oneday = timedelta(days=1)
 if last_plan is not None :
       #print last_plan
       date  = last_plan["created_at"]
-date = dt(2015,07,01)
+#date = dt(2015,07,01)
 def add_plan(plan_date):
     file_path = "data/bet/"
     year = plan_date.strftime("%Y")
@@ -29,14 +30,17 @@ def add_plan(plan_date):
     name = plan_date.strftime("%Y-%m-%d")
     full_path = dir_two + "/" + name
     url = "http://trade.500.com/jczq/?date=" + name  +"&playtype=both"
-    plan = db.request.find_one({"url" : url})
+    plan = db.request_plan.find_one({"url" : url})
     if plan is None:
         db.request_plan.insert({"url":url,"created_at":now, "file_path":full_path})
+        print "insert new plan"
+        print plan
+        print url
     if not path.exists(dir_one):
         os.mkdir(dir_one)
     if not path.exists(dir_two):
         os.mkdir(dir_two)    
-    print url
+    print name
 
 
 while True :

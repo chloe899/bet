@@ -14,11 +14,13 @@ var now = Date.now();
 function start(item, callback){
 
 
+    var filePath = item.file_path;
 
+    var url = item.url;
     async.waterfall([
 
         function(cb){
-            var url = item.url;
+
             //var url = "http://trade.500.com/jczq/?date=" + fileName  +"&playtype=both";
             log.debug(url);
             request({pool:{maxSockets: 20},url:url,method:"GET",encoding:null}, function(err, res, body){
@@ -40,7 +42,6 @@ function start(item, callback){
 
             log.debug("filePath request complete, %s", filePath);
             //log.debug(body);
-            var filePath = item.file_path
             fs.writeFile(filePath, body, function(err){
                 log.debug(err);
                 item.complete = true;

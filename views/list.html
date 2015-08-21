@@ -65,16 +65,29 @@
 
             });
 
-            $(window).on("scroll", function(){
+            function setBottom(){
 
                 var top =   $(window).scrollTop();
+
                 var height = $(window).height();
                 var dheight = $(document).height();
-                 if((top + height) + 100 > dheight){
-                     $(".detail").removeClass("fixed");
-                 }else{
-                     $(".detail").removeClass("fixed").addClass("fixed");
-                 }
+                //到底
+                if(((top + height) + 100 > dheight) || (dHeight - 100 < height  && top ==0)){
+                    $(".detail").removeClass("fixed");
+                }else{
+                    $(".detail").removeClass("fixed").addClass("fixed");
+                }
+            }
+
+            $(window).on("scroll", function(){
+                setBottom()
+
+
+            });
+
+            $(document).on("change", function(){
+                setBottom();
+
 
             });
 

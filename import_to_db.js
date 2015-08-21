@@ -300,7 +300,8 @@ function doParse(item, callback){
                     var timeUse = Date.now() - queryStart;
                     log.debug("query time use: %s ms", timeUse);
                     if(doc){
-                        if(doc.data.team_info.complete){
+                        log.debug(doc);
+                        if(doc.data.team_info && doc.data.team_info.complete){
                             cb();
                             return;
                         }
