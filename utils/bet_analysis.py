@@ -1,0 +1,63 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*
+from datetime import datetime as dt
+import time
+import pymongo
+
+conn = pymongo.Connection('localhost', port=27017)
+db = conn.lottery
+query = {"data.team_info.home_team.score": {"$exists": True}}
+games = db.game.find(query)
+bet_result = db.bet_result
+insert_count = 0
+start_time = time.time()
+
+for item in games:
+    game_id = item["game_id"]
+    r = bet_result.find_one({"game_id": game_id})
+    # print r is None
+    if r is None:
+        # print "url:{},path:{}".format(url, file_path)
+        now = dt.now()
+        s_data = item["data"]
+        team_info = item["data"]["team_info"]
+        data = {"created_at": now,
+                "game_id": game_id,
+                "team_info": team_info,
+                "lg": item["data"]["lg"],
+                "match_date": team_info["match_date"]
+                }
+        rate = team_info["rate"]
+        # print team_info
+        home_score = int(team_info["home_team"]["score"])
+        away_score = int(team_info["visit_team"]["score"])
+
+        for key in rate.keys():
+            goal_add = int(key)
+            game_result = home_score + goal_add - away_score
+
+            if game_result < 0:
+                game_result = 0
+            elif game_result > 0:
+                game_result = 3
+            else:
+                game_result = 1
+            goal_rate = rate[key]
+            print(goal_rate)
+            final_rate = goal_rate[str(game_result)]
+            data["result"] = game_result
+            data["rate"] = final_rate
+            bet_result.insert(data)
+            insert_count += 1
+            print("insert new")
+    else:
+        print r
+        print "exists"
+
+
+
+end_time = time.time()
+time_use = end_time - start_time
+print "complete, exit 88, time use  %s ms, %s result imported" % (time_use, insert_count)
+exit(0)
+
