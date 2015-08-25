@@ -1,6 +1,7 @@
 exports.Match = require("./game");
 exports.Alliance = require('./alliance');
 exports.Bet = require('./bet');
+exports.BetResult = require('./bet_result');
 exports.Game = require('./game');
 exports.League = require('./league');
 exports.LeagueClub = require('./league_club');

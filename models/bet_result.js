@@ -18,7 +18,8 @@ ModelSchema = new Schema({
     match_date:Date,
     created_at:Date,
     result:Number, // 0 ,1, 3　负平胜
+    lg:String,
     data_url:String
 });
 
-module.exports = mongoose.model('Game', ModelSchema, "game");
+module.exports = mongoose.model('BetResult', ModelSchema, "bet_result");

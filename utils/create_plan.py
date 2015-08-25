@@ -29,10 +29,10 @@ def add_plan(plan_date):
     dir_two = dir_one + "/" + month
     name = plan_date.strftime("%Y-%m-%d")
     full_path = dir_two + "/" + name
-    url = "http://trade.500.com/jczq/?date=" + name  +"&playtype=both"
-    plan = db.request_plan.find_one({"url" : url})
+    url = "http://trade.500.com/jczq/?date=" + name + "&playtype=both"
+    plan = db.request_plan.find_one({"url": url})
     if plan is None:
-        db.request_plan.insert({"url":url,"created_at":now, "file_path":full_path})
+        db.request_plan.insert({"url": url, "created_at": now, "file_path":full_path})
         print "insert new plan"
         print plan
         print url

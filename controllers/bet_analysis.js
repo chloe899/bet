@@ -10,7 +10,7 @@ var that = {};
 
 that.showList = function(req, res, next){
 
-    var Game = Models.Game;
+    var BetResult = Models.BetResult ;
     var query = req.query;
     var mongoQuery = {};
     var l = 100;
@@ -23,12 +23,12 @@ that.showList = function(req, res, next){
 
         if(typeof(name) == "string"){
 
-            mongoQuery["$or"] = [{"data.team_info.home_team.team_name":name},
-                {"data.team_info.visit_team.team_name":name},
+            mongoQuery["$or"] = [{"team_info.home_team.team_name":name},
+                {"team_info.visit_team.team_name":name},
             ];
         }else{
-            mongoQuery["$or"] = [{"data.team_info.home_team.team_name":{"$in":name}},
-                {"data.team_info.visit_team.team_name":{"$in":name}},
+            mongoQuery["$or"] = [{"team_info.home_team.team_name":{"$in":name}},
+                {"team_info.visit_team.team_name":{"$in":name}},
             ];
             teamCount = name.length;
         }
@@ -38,16 +38,13 @@ that.showList = function(req, res, next){
         l = 1000;
 
         if(typeof(query.l) == "string"){
-            mongoQuery["data.lg"] = query.l;
+            mongoQuery["lg"] = query.l;
         }else{
-            mongoQuery["data.lg"] = {"$in":query.l};
+            mongoQuery["lg"] = {"$in":query.l};
         }
 
     }
-    if(query.a){
-        mongoQuery.end_date =  {"$gt":new Date()};
 
-    }
     if(start){
         l = 1000;
         start = new Date(Date.parse(start));
@@ -61,42 +58,16 @@ that.showList = function(req, res, next){
     log.debug(mongoQuery);
     async.waterfall([function(cb){
 
-        Game.find(mongoQuery).sort({"data.pdate":-1}).limit(l).exec(function(err,docs){
-
-            //log.debug(docs);
-            var arr = _.map(docs, function(doc){
-                doc = doc.toJSON();
-                var data = doc.data;
-
-                if(data.team_info){
-
-                    doc.home_team = data.team_info.home_team;
-                    doc.visit_team = data.team_info.visit_team;
-                    var rates = [];
-                    _.each(data.team_info.rate, function(v,k){
-                        v.name = k;
-                        rates.push(v);
+        BetResult.find(mongoQuery).sort({"match_date":-1}).limit(l).exec(function(err,docs){
 
 
-
-                    });
-                    doc.rates = rates;
-
-
-                }else{
-                    doc.home_team = {};
-                    doc.visit_team = {};
-                }
-                doc.rates = doc.rates || [];
-                return doc;
-
-            });
-            cb(err, arr, docs);
+            cb(err,docs);
 
         });
-    }], function(err,arr, result){
+    }], function(err,arr){
 
 
+        log.debug(arr);
         var data = {list:arr};
         data.l = query.l || "";
         data.t = query.t || "";

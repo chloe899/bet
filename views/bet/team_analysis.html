@@ -216,12 +216,11 @@
             </div>
             <table class="table">
                 <tr>
-                    <th>日期</th>
                     <th>主队<span class="caret"></span></th>
                     <th>客队<span class="caret"></span></th>
-                    <th>让球</th>
-                    <th>培率</th>
-                    <th>结果</th>
+                    <th>胜率</th>
+                    <th>平率</th>
+                    <th>负率</th>
                     <th>-1胜率</th>
                     <th>-1平率</th>
                     <th>－负率</th>
@@ -237,12 +236,11 @@
 
 
                 <tr data-e="match">
-                    <td data-p="date"><%= item.match_date %></td>
                     <td><%= item.team_info.home_team.team_name %></td>
                     <td><%= item.team_info.visit_team.team_name %></td>
-                    <td><%= item.goal_add %></td>
-                    <td><%= item.rate %></td>
-                    <td><%= item.team_info.home_team.score %> : <%= item.team_info.visit_team.score %> (<%= item.result　== "0" ? "负" : item.result == 1 ? "平" : "胜" %>)</td>
+                    <td><%= item.win_rate %></td>
+                    <td><%= item.lost_rate %></td>
+                    <td><%= item.drawn_rate %></td>
                     <td><%= item.win_rate1 %></td>
                     <td><%= item.lost_rate1 %></td>
                     <td><%= item.drawn_rate1 %></td>

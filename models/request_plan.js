@@ -14,6 +14,7 @@ ModelSchema = new Schema({
     last_modified:Date,
     parse_complete:Boolean,
     complete:Boolean,
+    download_times:Number,//下载次数
     created_at:{type:Date, default:Date.now},
     completed_at:Date
 });

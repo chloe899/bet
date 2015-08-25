@@ -6,11 +6,12 @@ import pymongo
 
 conn = pymongo.Connection('localhost', port=27017)
 db = conn.lottery
-query = {"data.team_info.home_team.score": {"$exists": True}}
+query = {"data.team_info.home_team.score": {"$exists": True},}
 games = db.game.find(query)
 bet_result = db.bet_result
 insert_count = 0
 start_time = time.time()
+i = 0
 
 for item in games:
     game_id = item["game_id"]
@@ -21,10 +22,14 @@ for item in games:
         now = dt.now()
         s_data = item["data"]
         team_info = item["data"]["team_info"]
+        if "lg" not in s_data:
+            print item
+            # exit(0)
+            continue
         data = {"created_at": now,
                 "game_id": game_id,
                 "team_info": team_info,
-                "lg": item["data"]["lg"],
+                "lg": s_data["lg"],
                 "match_date": team_info["match_date"]
                 }
         rate = team_info["rate"]
@@ -44,15 +49,22 @@ for item in games:
                 game_result = 1
             goal_rate = rate[key]
             print(goal_rate)
-            final_rate = goal_rate[str(game_result)]
+            rate_key = str(goal_add)
+            if rate_key not in goal_rate:
+                print "rate_key %s not exists" % rate_key
+                print item
+                continue
+            final_rate = float(goal_rate[rate_key])
             data["result"] = game_result
             data["rate"] = final_rate
+            data["goal_add"] = goal_add
             bet_result.insert(data)
             insert_count += 1
             print("insert new")
     else:
-        print r
-        print "exists"
+        # print r
+        i += 1
+        print "exists" + str(i)
 
 
 

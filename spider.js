@@ -46,6 +46,8 @@ function start(item, callback){
                 log.debug(err);
                 item.complete = true;
                 item.last_modifed = new Date();
+                item.download_times = item.download_times || 0;
+                item.download_times++;
                 item.save(function(err){
 
                    callback(err);
@@ -94,7 +96,7 @@ async.waterfall([function(cb){
         var size = 1000;
         async.waterfall([function(cb){
 
-            Models.RequestPlan.find({"complete":{"$ne":true}}).sort({last_modified:1}).skip(complete).limit(size).exec(function(err, docs){
+            Models.RequestPlan.find({"complete":{"$ne":true},"download_times":{"$lt":10}}).sort({last_modified:1}).skip(complete).limit(size).exec(function(err, docs){
 
                 cb(err, docs);
             });
