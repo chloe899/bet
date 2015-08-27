@@ -70,9 +70,9 @@
                 var top =   $(window).scrollTop();
 
                 var height = $(window).height();
-                var dheight = $(document).height();
+                var dHeight = $(document).height();
                 //到底
-                if(((top + height) + 100 > dheight) || (dHeight - 100 < height  && top ==0)){
+                if(((top + height) + 100 > dHeight) || (dHeight - 100 < height  && top ==0)){
                     $(".detail").removeClass("fixed");
                 }else{
                     $(".detail").removeClass("fixed").addClass("fixed");

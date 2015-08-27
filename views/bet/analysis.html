@@ -65,31 +65,8 @@
 
             });
 
-            function setBottom(){
-
-                var top =   $(window).scrollTop();
-
-                var height = $(window).height();
-                var dheight = $(document).height();
-                //到底
-                if(((top + height) + 100 > dheight) || (dHeight - 100 < height  && top ==0)){
-                    $(".detail").removeClass("fixed");
-                }else{
-                    $(".detail").removeClass("fixed").addClass("fixed");
-                }
-            }
-
-            $(window).on("scroll", function(){
-                setBottom()
 
 
-            });
-
-            $(document).on("change", function(){
-                setBottom();
-
-
-            });
 
             $("#btn_analysis").on("click", function(){
 
@@ -238,8 +215,8 @@
 
                 <tr data-e="match">
                     <td data-p="date"><%= item.match_date %></td>
-                    <td><%= item.team_info.home_team.team_name %></td>
-                    <td><%= item.team_info.visit_team.team_name %></td>
+                    <td><%= item.team_info.home_team.team_name %> (<%= item.team_info.home_team.rank %>) </td>
+                    <td><%= item.team_info.visit_team.team_name %> (<%= item.team_info.visit_team.rank %>) </td>
                     <td><%= item.goal_add %></td>
                     <td><%= item.rate %></td>
                     <td><%= item.team_info.home_team.score %> : <%= item.team_info.visit_team.score %> (<%= item.result　== "0" ? "负" : item.result == 1 ? "平" : "胜" %>)</td>
