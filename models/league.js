@@ -13,7 +13,8 @@ ModelSchema = new Schema({
     season:String,
     created_at:Date,
     last_update:Boolean,//是否已经发奖
-    club_count:Number  //俱乐部数量
+    club_count:Number,  //俱乐部数量
+    source:String //数据来源
 
 });
 //{victory,draw，lost}

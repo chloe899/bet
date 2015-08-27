@@ -17,6 +17,9 @@ that.showList = function(req, res, next){
     var start = query.s;
     var endDate = query.e;
     var teamCount = 1;
+
+
+
     if(query.t){
         l = 1000;
         var name = query.t;

@@ -32,12 +32,12 @@ for item in games:
                 "lg": s_data["lg"],
                 "match_date": team_info["match_date"]
                 }
-        rate = team_info["rate"]
+        all_rate = team_info["rate"]
         # print team_info
         home_score = int(team_info["home_team"]["score"])
         away_score = int(team_info["visit_team"]["score"])
 
-        for key in rate.keys():
+        for key in all_rate.keys():
             goal_add = int(key)
             game_result = home_score + goal_add - away_score
 
@@ -47,24 +47,32 @@ for item in games:
                 game_result = 3
             else:
                 game_result = 1
-            goal_rate = rate[key]
-            print(goal_rate)
-            rate_key = str(goal_add)
-            if rate_key not in goal_rate:
-                print "rate_key %s not exists" % rate_key
-                print item
-                continue
-            final_rate = float(goal_rate[rate_key])
+            goal_rate = all_rate[key]
+            # print(goal_rate)
+            rate_key = str(game_result)
+            final_rate = 1
+            if rate_key in goal_rate:
+                final_rate = float(goal_rate[rate_key])
+            else:
+                print "rate_key %s not exists, goal_add is : %s" % (rate_key, goal_add)
+                print "all_rate is %s" % all_rate
+                print goal_rate
+                print rate_key
             data["result"] = game_result
             data["rate"] = final_rate
             data["goal_add"] = goal_add
+            if s_data["lg"] == u"英超":
+                print "rate_key is %s , goal_add is : %s" % (rate_key, goal_add)
+                print "all_rate is %s, math_date is %s" % (all_rate, team_info["match_date"])
+                print data
             bet_result.insert(data)
+            data.pop("_id")
             insert_count += 1
-            print("insert new")
+            # print("insert new")
     else:
         # print r
         i += 1
-        print "exists" + str(i)
+        # print "exists" + str(i)
 
 
 
