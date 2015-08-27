@@ -47,6 +47,11 @@ that.showList = function(req, res, next){
         }
 
     }
+    var goal_add  = req.query.goal_add;
+    if(goal_add == "none"){
+
+        mongoQuery.goal_add = 0;
+    }
 
     if(start){
         l = 1000;
@@ -77,6 +82,7 @@ that.showList = function(req, res, next){
         data.a = query.a;
         data.s = start || "";
         data.e = endDate || "";
+        data.goal_add = goal_add || "";
         data.teamCount = teamCount ;
         // log.debug(data);
         data.user = req.session.user;

@@ -3,7 +3,7 @@ var fs = require("fs");
 var async = require("async");
 var Models = require("./models");
 var mongoose = require("mongoose");
-var log = require("./lib/logger").getLogger();
+var log = require("../lib/logger").getLogger();
 var now = Date.now();
 
 
@@ -50,7 +50,7 @@ function start(item, callback){
                 item.download_times++;
                 item.save(function(err){
 
-                   callback(err);
+                    callback(err);
                 });
 
 
@@ -88,58 +88,7 @@ async.waterfall([function(cb){
 
     log.debug("start");
 
-    function startDownload(complete){
-
-
-
-        complete = complete || 0;
-        var size = 1000;
-        async.waterfall([function(cb){
-
-            Models.RequestPlan.find({"complete":{"$ne":true},
-                "$or":[{"download_times":{"$lt":10}},{"download_times":{"$exists":false}}]}).sort({last_modified:1}).skip(complete).limit(size).exec(function(err, docs){
-
-                cb(err, docs);
-            });
-
-
-        }], function(err, arr){
-
-            log.debug(arguments);
-            async.eachLimit(arr, 30, function(item, cb){
-
-                start(item,function(){
-                    cb(null);
-                });
-            }, function(err, results){
-                if(err){
-                    log.error(err);
-                    log.error("there is an error");
-                    return;
-                }
-                if(arr.length < size){
-
-                    if(complete == 0 && arr.length == 0){
-                        log.debug("no plan");
-
-                    }else{
-                        log.debug("all request complete, %s files download", complete + arr.length);
-                    }
-
-                    process.exit(0);
-                }else{
-
-                    startDownload(complete + size);
-                }
-
-
-            });
-
-
-        });
-
-
-
+    function startDownload(complete) {
 
 
 

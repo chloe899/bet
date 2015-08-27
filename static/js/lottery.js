@@ -333,6 +333,26 @@
 
 
 
+    $.pagination = function(total, pageSize, p){
+
+        var $nav = $("nav[data-e='pagination']");
+        var search = location.search || "";
+        search = search.replace(/[&?]?p=\d*/,"");
+        var cha = "&"
+        if(!search){
+            cha = "?";
+        }
+        search = location.pathname +  search + cha + "p=";
+        $nav.pagination({
+            items: total,
+            itemsOnPage: pageSize,
+            cssStyle: 'light-theme',
+            currentPage:p,
+            hrefTextPrefix:search
+        });
+    }
+
+
 
 
 

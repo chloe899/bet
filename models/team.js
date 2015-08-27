@@ -15,7 +15,7 @@ ModelSchema = new Schema({
     country:String,
     status:String,
     nick_name:String,
-    manager:String,//是否已经发奖
+    manager:String,//教练
     stadium:String,
     found_year:Number
 

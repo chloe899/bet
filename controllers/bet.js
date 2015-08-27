@@ -58,17 +58,28 @@ that.showBetList = function(req, res, next){
     }
 
     var user = req.session.user;
-
     var Bet = Models.Bet;
     var Match = Models.Match;
     var query = {user_id:user._id};
 
-    async.waterfall([function(cb){
-        Bet.find(query).sort({created_at:-1}).exec(function(err, docs){
+    var page = req.query.p || 1;
+    var pageSize = 20;
+    var total = 0;
+    var skip = (page - 1) * pageSize;
 
-            cb(err, docs);
+
+    async.waterfall([function(cb){
+        Bet.count(query, function(err, totalBet){
+            total = totalBet;
+            Bet.find(query).sort({created_at:-1}).skip(skip).limit(pageSize).exec(function(err, docs){
+
+                cb(err, docs);
+
+            });
+
 
         });
+
 
     }, function(docs, cb){
         //log.debug(docs);
@@ -122,6 +133,9 @@ that.showBetList = function(req, res, next){
 
         });
         var data = {list:docs};
+        data.p = page;
+        data.pageSize = pageSize;
+        data.total = total;
         var viewPath = "bet/list.html";
         res.render(viewPath, data);
 
