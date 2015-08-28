@@ -12,9 +12,9 @@ ModelSchema = new Schema({
     url:String,
     file_path:String,
     last_modified:Date,
-    parse_complete:Boolean,
-    complete:Boolean,
-    download_times:Number,//下载次数
+    parse_complete:{type:Boolean,default:false},
+    complete:{type:Boolean,default:false},
+    download_times:{type:Number,default:0},//下载次数
     created_at:{type:Date, default:Date.now},
     completed_at:Date
 });

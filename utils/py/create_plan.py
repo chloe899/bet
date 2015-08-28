@@ -1,13 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*
 
-import xdrlib, sys, os, getopt, re
+import os
 from os import path
-import xlrd
-import pymongo, string, time
 from datetime import datetime as dt
 from datetime import timedelta
 
+import pymongo
 
 conn = pymongo.Connection('localhost', port=27017)
 db = conn.lottery
