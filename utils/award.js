@@ -48,6 +48,8 @@ function start(){
 
     }], function(err ,result){
           log.debug(arguments);
+        process.exit(0);
+
 
     });
 

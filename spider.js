@@ -115,6 +115,7 @@ async.waterfall([function(cb){
                 if(err){
                     log.error(err);
                     log.error("there is an error");
+                    process.exit(0);
                     return;
                 }
                 if(arr.length < size){
