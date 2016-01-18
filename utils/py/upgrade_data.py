@@ -4,9 +4,9 @@
 from os import path
 import string
 from datetime import datetime as dt
-from pymongo import Connection
+from pymongo import MongoClient
 
-conn = Connection('localhost', port=27017)
+conn = MongoClient('localhost', port=27017)
 db = conn.lottery
 
 records = db.parse_record.find({})

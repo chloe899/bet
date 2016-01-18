@@ -198,85 +198,85 @@ function doParse(item, callback){
 
             var q = {name:filePath,complete:true};
             ParseRecord.findOne(q, function(err, d){
-               if(d){
-                   item.parse_complete = true;
-                   item.save(function(){
+                if(d){
+                    item.parse_complete = true;
+                    item.save(function(){
 
-                       cb("parse complete");
-                   });
+                        cb("parse complete");
+                    });
 
-               }
+                }
                 else{
-                   cb();
-               }
+                    cb();
+                }
 
             });
 
         },
         function(cb){
 
-        fs.readFile(filePath, function(err, buffer){
+            fs.readFile(filePath, function(err, buffer){
+
+                //log.debug(arguments);
+                cb(err, buffer);
+
+
+            });
+
+        }, function(buffer, cb){
+            buffer = iconv.decode(buffer,"GBK");
+            cb(null,buffer.toString());
+
+
+        }, function(content,cb){
 
             //log.debug(arguments);
-            cb(err, buffer);
+            var reg = /<tr[\s]*zid=(([\s\S](?!<\/tr>))+[\s\S])<\/tr>/g;
+            var result = reg.exec(content);
+            //log.debug(result);
+            var resultArr = [];
+            var pageFound = 0;
+            if(result){
+                while(result){
 
 
-        });
+                    gameFound++;
+                    pageFound++;
+                    var regContent = result[0];
+                    var trReg = /<tr([^]+)>/;
+                    var valReg = /([^\s=]+)="([^"]+)"/g;
+                    var trContent = trReg.exec(regContent);
 
-    }, function(buffer, cb){
-        buffer = iconv.decode(buffer,"GBK");
-        cb(null,buffer.toString());
+                    trContent = trContent && trContent[0];
+                    if(trContent){
+                        //log.debug(trContent);
+                        var val = valReg.exec(trContent);
+                        var teamResult = {};
+                        while(val){
+                            var key = val[1];
+                            var keyVal = val[2];
+                            teamResult[key] = keyVal;
+                            //log.debug("key is:%s, val is:%s", key, keyVal);
+                            val = valReg.exec(trContent);
 
+                        }
 
-    }, function(content,cb){
-
-        //log.debug(arguments);
-        var reg = /<tr[\s]*zid=(([\s\S](?!<\/tr>))+[\s\S])<\/tr>/g;
-        var result = reg.exec(content);
-        //log.debug(result);
-        var resultArr = [];
-        var pageFound = 0;
-        if(result){
-            while(result){
-
-
-                gameFound++;
-                pageFound++;
-                var regContent = result[0];
-                var trReg = /<tr([^]+)>/;
-                var valReg = /([^\s=]+)="([^"]+)"/g;
-                var trContent = trReg.exec(regContent);
-
-                trContent = trContent && trContent[0];
-                if(trContent){
-                    //log.debug(trContent);
-                    var val = valReg.exec(trContent);
-                    var teamResult = {};
-                    while(val){
-                        var key = val[1];
-                        var keyVal = val[2];
-                        teamResult[key] = keyVal;
-                        //log.debug("key is:%s, val is:%s", key, keyVal);
-                        val = valReg.exec(trContent);
+                        var teamInfo = parseGameInfo(trContent);
+                        teamResult.team_info = teamInfo;
+                        //log.debug(teamInfo);
+                        resultArr.push(teamResult);
 
                     }
-
-                    var teamInfo = parseGameInfo(trContent);
-                    teamResult.team_info = teamInfo;
-                    //log.debug(teamInfo);
-                    resultArr.push(teamResult);
-
+                    result = reg.exec(content);
                 }
-                result = reg.exec(content);
+                //log.debug("found game count : %s in file %s", pageFound, filePath);
+            }else{
+                log.debug("not found file path is %s", filePath);
             }
-            //log.debug("found game count : %s in file %s", pageFound, filePath);
-        }else{
-            log.debug("not found file path is %s", filePath);
-        }
-        cb(null, resultArr);
+            cb(null, resultArr);
 
 
-    }], function(err, resultArr){
+        }], function(err, resultArr){
 
         //log.debug(resultArr);
 
@@ -287,11 +287,11 @@ function doParse(item, callback){
 
             });
 
-            async.each(resultArr, function(result, cb){
-                var gameId = result.zid;
-                var query =  {game_id:result.zid};
-                if(result.lg){
-                    result.lg = result.lg.replace(/\s/g,"");
+            async.eachSeries(resultArr, function(matchItem, cb){
+                var gameId = matchItem.zid;
+                var query =  {game_id:gameId};
+                if(matchItem.lg){
+                    matchItem.lg = matchItem.lg.replace(/\s/g,"");
                 }
 
                 var queryStart = Date.now();
@@ -305,9 +305,9 @@ function doParse(item, callback){
                             cb();
                             return;
                         }
-                        doc.data = result;
-                        doc.end_date = new Date(Date.parse(result.pendtime));
-                        doc.match_date = result.team_info.match_date;
+                        doc.data = matchItem;
+                        doc.end_date = new Date(Date.parse(matchItem.pendtime));
+                        doc.match_date = matchItem.team_info.match_date;
                         doc.data_url = url;
                         doc.save(function(err, doc){
                             //log.debug(result);
@@ -318,9 +318,9 @@ function doParse(item, callback){
                         //cb();
                     }else{
                         log.debug("create new");
-                        doc = {game_id:result.zid,data:result};
-                        doc.end_date = new Date(Date.parse(result.pendtime));
-                        doc.match_date = result.team_info.match_date;
+                        doc = {game_id:matchItem.zid,data:matchItem};
+                        doc.end_date = new Date(Date.parse(matchItem.pendtime));
+                        doc.match_date = matchItem.team_info.match_date;
                         doc.data_url = url;
                         Game.create(doc, function(err,doc){
                             cb();
@@ -328,64 +328,68 @@ function doParse(item, callback){
                     }
 
                 });
-            }, function(err, result){
-                log.debug("save to db complete");
-                var url  = item.url;
-                ParseRecord.findOne({url:url}, function(err, doc){
-                    var data = doc || {name:filePath,url:url};
-                    data.complete = true;
-                    data.created_at = new Date();
-                    data.match_count = resultArr.length;
-                    data.file_path = filePath;
-                    if(hasUnComplete){
-                       data.complete = false;
-                       var arr =  _.select(resultArr, function(item){
-                            return !item.team_info.complete;
-
-                        });
-
-                        log.debug(arr);
-                    }
-                    if(data.complete){
-                        data.completed_at = new Date();
-                    }
 
 
-                    if(doc){
-
-                        doc.save(function(err, result){
-                            callback(err, result, doc);
-                        })
-                    }else{
-
-                        ParseRecord.create(data, function(err, result){
-                            callback(err, result, data);
-                        });
-                    }
 
 
-                });
+        }, function(err, result){
+            log.debug("save to db complete");
+            var url  = item.url;
+            ParseRecord.findOne({url:url}, function(err, doc){
+                var data = doc || {name:filePath,url:url};
+                data.complete = true;
+                data.created_at = new Date();
+                data.match_count = resultArr.length;
+                data.file_path = filePath;
+                if(hasUnComplete){
+                    data.complete = false;
+                    var arr =  _.select(resultArr, function(item){
+                        return !item.team_info.complete;
+
+                    });
+                    log.debug(arr);
+                }
+                if(data.complete){
+                    data.completed_at = new Date();
+                }
 
 
+                if(doc){
+
+                    doc.save(function(err, result){
+                        callback(err, result, doc);
+                    })
+                }else{
+
+                    ParseRecord.create(data, function(err, result){
+                        callback(err, result, data);
+                    });
+                }
 
 
             });
 
 
-        }else{
-            log.debug(arguments);
-            var data = {name:filePath};
-            data.complete = true;
-            data.created_at = new Date();
-            data.match_count = 0;
-            ParseRecord.create(data, function(err, result){
 
-                callback(err, result, data);
-            });
 
-        }
+        });
 
-    });
+
+
+    }else{
+        log.debug(arguments);
+        var data = {name:filePath};
+        data.complete = true;
+        data.created_at = new Date();
+        data.match_count = 0;
+        ParseRecord.create(data, function(err, result){
+
+            callback(err, result, data);
+        });
+
+    }
+
+});
 
 
 }

@@ -7,8 +7,8 @@ from datetime import datetime as dt
 from datetime import timedelta
 
 import pymongo
-
-conn = pymongo.Connection('localhost', port=27017)
+host = 'localhost'
+conn = pymongo.MongoClient('localhost', port=27017)
 db = conn.lottery
 last_plan = db.request_plan.find_one({}, {"created_at": -1})
 print last_plan

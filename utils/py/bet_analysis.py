@@ -4,7 +4,7 @@ from datetime import datetime as dt
 import time
 import pymongo
 
-conn = pymongo.Connection('localhost', port=27017)
+conn = pymongo.MongoClient('localhost', port=27017)
 db = conn.lottery
 query = {"data.team_info.home_team.score": {"$exists": True},}
 games = db.game.find(query)
