@@ -48,6 +48,8 @@ function start(){
 
     }], function(err ,result){
           log.debug(arguments);
+        process.exit(0);
+
 
     });
 
@@ -70,8 +72,5 @@ async.waterfall([function(cb){
 }], function(err, result){
 
     start();
-
-
-
 
 });

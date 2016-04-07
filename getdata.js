@@ -13,7 +13,7 @@ var ParseRecord = Models.ParseRecord;
 
 var now = Date.now();
 
-var startDate = Date.parse("2015-08-01");
+var startDate = Date.parse("2011-08-01");
 startDate = new Date(startDate);
 
 
@@ -84,9 +84,11 @@ function start(date, callback){
                     cb("file exits");
                 }else{
 
-                    var url = "http://trade.500.com/jczq/?date=" + fileName  +"&playtype=both"
-                    request({pool:{maxSockets: 200},url:url,method:"GET",encoding:null}, function(err, res, body){
+                    var url = "http://trade.500.com/jczq/?date=" + fileName  +"&playtype=both";
+                    log.debug(url);
+                    request({pool:{maxSockets: 20},url:url,method:"GET",encoding:null}, function(err, res, body){
 
+                        log.debug(err);
                         cb(err, body);
 
 
@@ -160,7 +162,7 @@ async.waterfall([function(cb){
         fileArr.push(date);
     }
 
-    async.each(fileArr, function(date, cb){
+    async.eachSeries(fileArr, function(date, cb){
 
         start(date,function(err,r){
             cb(null);

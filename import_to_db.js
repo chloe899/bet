@@ -4,7 +4,8 @@ var async = require("async");
 var iconv = require("iconv-lite");
 var log = require("./lib/logger").getLogger();
 var mongoose = require("mongoose");
-var Game = require("./models/game.js");
+var Models = require("./models/");
+var Game = Models.Game;
 var _ = require("underscore");
 
 
@@ -184,19 +185,26 @@ function parseGameInfo(trContent){
 
 
 }
+var ParseRecord = Models.ParseRecord;
 
-function doParse(filePath, callback){
+function doParse(item, callback){
 
-    var url = util.getUrlByFilePath(filePath);
+    var url = item.url;
+    var filePath = item.file_path;
     async.waterfall([
 
         function(cb){
 
-            var ParseRecord = require("./models/parse_record");
+
             var q = {name:filePath,complete:true};
             ParseRecord.findOne(q, function(err, d){
                if(d){
-                   cb("parse complete");
+                   item.parse_complete = true;
+                   item.save(function(){
+
+                       cb("parse complete");
+                   });
+
                }
                 else{
                    cb();
@@ -271,7 +279,7 @@ function doParse(filePath, callback){
     }], function(err, resultArr){
 
         //log.debug(resultArr);
-        var ParseRecord = require("./models/parse_record");
+
         if(resultArr){
             //callback(null, resultArr);
             var hasUnComplete = _.find(resultArr, function(item){
@@ -292,7 +300,8 @@ function doParse(filePath, callback){
                     var timeUse = Date.now() - queryStart;
                     log.debug("query time use: %s ms", timeUse);
                     if(doc){
-                        if(doc.data.team_info.complete){
+                        log.debug(doc);
+                        if(doc.data.team_info && doc.data.team_info.complete){
                             cb();
                             return;
                         }
@@ -321,27 +330,36 @@ function doParse(filePath, callback){
                 });
             }, function(err, result){
                 log.debug("save to db complete");
-                ParseRecord.findOne({name:filePath}, function(err, doc){
-                    var data = doc || {name:filePath};
+                var url  = item.url;
+                ParseRecord.findOne({url:url}, function(err, doc){
+                    var data = doc || {name:filePath,url:url};
                     data.complete = true;
                     data.created_at = new Date();
                     data.match_count = resultArr.length;
+                    data.file_path = filePath;
                     if(hasUnComplete){
                        data.complete = false;
                        var arr =  _.select(resultArr, function(item){
                             return !item.team_info.complete;
 
                         });
+
                         log.debug(arr);
                     }
+                    if(data.complete){
+                        data.completed_at = new Date();
+                    }
+
+
                     if(doc){
+
                         doc.save(function(err, result){
-                            callback(err, result);
+                            callback(err, result, doc);
                         })
                     }else{
 
                         ParseRecord.create(data, function(err, result){
-                            callback(err, result);
+                            callback(err, result, data);
                         });
                     }
 
@@ -362,7 +380,7 @@ function doParse(filePath, callback){
             data.match_count = 0;
             ParseRecord.create(data, function(err, result){
 
-                callback(err, result);
+                callback(err, result, data);
             });
 
         }
@@ -410,77 +428,91 @@ async.waterfall([function(cb){
 }], function(){
 
 
-    var fileArr = [];
-    while(true){
-        var now = Date.now();
-        var day = startDate.getDate();
-        startDate.setDate(day+1);
-        if(!(startDate.valueOf() < now)){
-            //log.debug("game found is :%s", gameFound);
-            ///log.debug(pathArr.length);
-            break;
-        }
-        var filePath =  util.getFilePath(startDate);
-        fileArr.push(filePath);
-    }
-    var pStartDate = Date.now();
-    async.eachSeries(fileArr, function(filePath, cb){
-        doParse(filePath, function(err, result){
 
-            cb(err, result);
+
+
+    var pStartDate = Date.now();
+    function startDownload(complete){
+
+
+
+        complete = complete || 0;
+        var size = 1000;
+        async.waterfall([function(cb){
+
+            Models.RequestPlan.find({"complete":true,"parse_complete":{"$ne":true}}).sort({last_modified:1}).skip(complete).limit(size).exec(function(err, docs){
+
+                cb(err, docs);
+            });
+
+
+        }], function(err, arr){
+
+            log.debug(arguments);
+            async.eachLimit(arr, 30, function(item, cb){
+
+
+                doParse(item, function(err, result, record){
+
+                    if(record){
+                        item.parse_complete = record.complete;
+                        item.complete = record.complete;
+                        log.debug(record.complete);
+                        item.save(function(){
+                            cb(err, result);
+                        });
+                    }else{
+                        log.error(err);
+                        cb(err, result);
+                    }
+
+
+                });
+
+            }, function(err, results){
+                if(err){
+                    log.error(err);
+                    log.error("there is an error");
+                    return;
+                }
+                if(arr.length < size){
+
+                    if(complete == 0 && arr.length == 0){
+                        log.debug("no plan");
+
+                    }else{
+                        log.debug("all request complete, %s files parsed", complete + arr.length);
+                    }
+                    var completeDate = Date.now();
+                    var timeUse = completeDate - pStartDate;
+                    log.debug("time use: %s ms", timeUse);
+                    process.exit(0);
+                }else{
+
+                    startDownload(complete + size);
+                }
+
+
+            });
+
 
         });
 
 
-    },function(err){
-        var completeDate = Date.now();
-        var timeUse = completeDate - pStartDate;
-        log.debug("time use: %s ms", timeUse);
-        process.exit(0);
-
-    });
-
-
-    /*  var queryStart = Date.now();
-     var query = { game_id: '50024' };
-     Game.findOne(query,function(err,doc){
-     log.debug(query);
-     var timeUse = Date.now() - queryStart;
-     log.debug("query time use: %s ms", timeUse);
-     *//*if(doc){
-     doc.data = result;
-     doc.save(function(err, doc){
-     //log.debug(result);
-     //log.debug("save doc,dos is %s", doc);
-     log.debug("update exists");
-     cb();
-     });
-     cb();
-     }else{
-     log.debug("create new");
-     Game.create({game_id:result.zid,data:result}, function(err,doc){
-     cb();
-     });
-     }*//*
-
-     });*/
 
 
 
 
-    /* start(startDate);
-     startOne();
-     startOne();
-     startOne();
-     startOne();
-     startOne();
-     startOne();
-     startOne();
-     startOne();
-     startOne();
-     startOne();
-     startOne();
-     startOne();*/
+
+
+    }
+
+    startDownload();
+
+
+
+
+
 });
 
 

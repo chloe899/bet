@@ -65,16 +65,29 @@
 
             });
 
-            $(window).on("scroll", function(){
+            function setBottom(){
 
                 var top =   $(window).scrollTop();
+
                 var height = $(window).height();
-                var dheight = $(document).height();
-                 if((top + height) + 100 > dheight){
-                     $(".detail").removeClass("fixed");
-                 }else{
-                     $(".detail").removeClass("fixed").addClass("fixed");
-                 }
+                var dHeight = $(document).height();
+                //到底
+                if(((top + height) + 100 > dHeight) || (dHeight - 100 < height  && top ==0)){
+                    $(".detail").removeClass("fixed");
+                }else{
+                    $(".detail").removeClass("fixed").addClass("fixed");
+                }
+            }
+
+            $(window).on("scroll", function(){
+                setBottom()
+
+
+            });
+
+            $(document).on("change", function(){
+                setBottom();
+
 
             });
 
@@ -172,13 +185,10 @@
             <label for="inputT" class="col-md-2 control-label">TeamName</label>
             <div class="col-md-8">
                 <select class="col-md-12" id="inputT" multiple="multiple" data-e="team" name="t" value="<%= t %>" ></select>
-
             </div>
             <div class="col-md-2">
                 Active:<input name="a"  value="1" <%= a ? "checked" : "" %> type="checkbox" />
             </div>
-
-
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
