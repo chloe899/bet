@@ -10,6 +10,7 @@ var mongoose = require('mongoose'),
 ModelSchema = new Schema({
     name:String,
     name_en:String,
+    name_zh:String,
     created_at:Date,
     website:String,
     country:String,
