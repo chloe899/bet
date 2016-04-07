@@ -6,8 +6,8 @@ import string
 from datetime import datetime as dt
 from pymongo import Connection
 
-conn = Connection('localhost', port=27017)
-db = conn.lottery
+conn = pymongo.MongoClient("localhost", port=27017)
+db = getattr(conn, "lottery")
 
 records = db.parse_record.find({})
 plan = db.request_plan
