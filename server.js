@@ -38,12 +38,16 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 var salt = "ha ha ha 123s";
 app.use(express.static(path.join(__dirname, 'static')));
+
+var redisConfig = siteConfig.db.redis;
 app.use(session({
-    store: new RedisStore({ secret: salt, store: new RedisStore, cookie: {maxAge: 3600000 * 24 * 30} }),
-    secret:salt,
+    store: new RedisStore(redisConfig),
+    secret: salt,
+    cookie: {maxAge: 1000 * 60,secret:salt},
     resave:true,
     saveUninitialized:true
 }));
+
 
 
 
