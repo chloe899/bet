@@ -153,8 +153,10 @@ that.showIndex = function(req, res, next){
 
     var Game = Models.Game;
     var query = req.query;
-    var mongoQuery = {};
-    var l = 100;
+    var oneDay = 3600 * 1000 * 24;
+    var now = Date.now();
+    var mongoQuery = {match_date: {"$gt": new Date(now - oneDay * 3)}};
+    var l = 300;
     var start = query.s;
     var endDate = query.e;
     if(query.t){
