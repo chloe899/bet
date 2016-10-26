@@ -97,7 +97,7 @@ async.waterfall([function(cb){
         async.waterfall([function(cb){
 
             Models.RequestPlan.find({"complete":{"$ne":true},
-                "$or":[{"download_times":{"$lt":10}},{"download_times":{"$exists":false}}]}).sort({last_modified:1}).skip(complete).limit(size).exec(function(err, docs){
+                "$or":[{"download_times":{"$lt":500}},{"download_times":{"$exists":false}}]}).sort({last_modified:1}).skip(complete).limit(size).exec(function(err, docs){
 
                 cb(err, docs);
             });
