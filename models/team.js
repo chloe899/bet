@@ -1,5 +1,5 @@
 'use strict'
-
+//球队资料
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId,
